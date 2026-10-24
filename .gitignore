@@ -1,0 +1,11 @@
+.DS_Store
+.agents/**
+.claude/**
+
+10K_website_demo/**
+10K-websites/**
+tests/**
+
+.claude/.comfyurn-smoke-pass
+.claude/settings.local.json
+node_modules/
