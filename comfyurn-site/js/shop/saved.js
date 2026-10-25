@@ -12,16 +12,16 @@ function render(){
   if(!items.length){grid.innerHTML='<div class="empty"><h2>Nothing saved yet.</h2><p>Tap the heart on any product to keep it here. <a href="products.html">Browse all products</a>.</p></div>';return}
   grid.innerHTML=items.map(p=>{
     const url=CF.productUrl(p),stock=CF.stock(p),left=store.left(p.id),off=CF.off(p);
-    return `<article class="card in" data-id="${p.id}">
-      <div class="ph"><a class="phlink" href="${url}" aria-label="View ${p.name}, ${p.desc}" tabindex="-1"></a>${off?`<span class="badge sale">${off}% off</span>`:stock.badge?`<span class="badge low">${stock.badge}</span>`:''}${art(p.type,COL[p.cols[0]])}</div>
+    return `<article class="card in" data-id="${CF.esc(p.id)}">
+      <div class="ph"><a class="phlink" href="${url}" aria-label="View ${CF.esc(p.name)}, ${CF.esc(p.desc)}" tabindex="-1"></a>${off?`<span class="badge sale">${off}% off</span>`:stock.badge?`<span class="badge low">${CF.esc(stock.badge)}</span>`:''}${art(p.type,COL[p.cols[0]])}</div>
       <div class="info">
-        <h2 class="name"><a href="${url}">${p.name}</a></h2>
-        <div class="desc">${p.desc}</div>
+        <h2 class="name"><a href="${url}">${CF.esc(p.name)}</a></h2>
+        <div class="desc">${CF.esc(p.desc)}</div>
         <div class="price">${CF.priceHTML(p.price)}${CF.wasHTML(p)}</div>
-        <div class="saved-stock">${stock.text}</div>
+        <div class="saved-stock">${CF.esc(stock.text)}</div>
         <div class="row">
-          <button class="btn sm" type="button" data-add="${p.id}" ${left?'':'disabled'}>${left?'Add to bag':stock.kind==='out'?'Sold out':'All in your bag'}</button>
-          <button class="saved-rm" type="button" data-rm="${p.id}" aria-label="Remove ${p.name} from saved">Remove</button>
+          <button class="btn sm" type="button" data-add="${CF.esc(p.id)}" ${left?'':'disabled'}>${left?'Add to bag':stock.kind==='out'?'Sold out':'All in your bag'}</button>
+          <button class="saved-rm" type="button" data-rm="${CF.esc(p.id)}" aria-label="Remove ${CF.esc(p.name)} from saved">Remove</button>
         </div>
       </div></article>`;
   }).join('');
@@ -32,7 +32,7 @@ grid.addEventListener('click',e=>{
     const p=CF.PRODUCTS.find(x=>x.id===add.dataset.add);
     // adding redraws the grid, so hand the drawer the new button to return focus to
     if(store.addToBag(p.id,p.cols[0],1)){
-      const card=grid.querySelector(`[data-id="${p.id}"]`),btn=card&&card.querySelector('[data-add]');
+      const card=grid.querySelector(`[data-id="${CSS.escape(p.id)}"]`),btn=card&&card.querySelector('[data-add]');
       // at the stock limit the redrawn button is disabled, so return focus to the product name instead
       CF.cart.open(btn&&!btn.disabled?btn:card?card.querySelector('.name a'):document.getElementById('main'));
     }
@@ -43,7 +43,7 @@ grid.addEventListener('click',e=>{
     const nextId=next&&next.dataset.id;
     store.toggleSaved(rm.dataset.rm);
     // keep keyboard focus nearby after the card disappears
-    const target=nextId&&grid.querySelector(`[data-id="${nextId}"] [data-rm]`);(target||document.getElementById('main')).focus();
+    const target=nextId&&grid.querySelector(`[data-id="${CSS.escape(nextId)}"] [data-rm]`);(target||document.getElementById('main')).focus();
   }
 });
 tools.addEventListener('click',e=>{

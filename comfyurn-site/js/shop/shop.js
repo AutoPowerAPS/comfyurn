@@ -17,8 +17,8 @@ $('price').querySelectorAll('option[value*="-"]').forEach(o=>{
 });
 
 /* ---------- type tiles ---------- */
-const card=CF.token('--card');
-$('tiles').innerHTML=TILES.map(([k,l])=>`<button class="tile" type="button" data-tile="${k}" aria-pressed="false"><div class="ti">${art(k,card)}</div><span>${l}</span></button>`).join('');
+const card=CF.token('--card','#EFEEEA');
+$('tiles').innerHTML=TILES.map(([k,l])=>`<button class="tile" type="button" data-tile="${CF.esc(k)}" aria-pressed="false"><div class="ti">${art(k,card)}</div><span>${CF.esc(l)}</span></button>`).join('');
 
 /* ---------- render ---------- */
 const cardIO=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');cardIO.unobserve(e.target)}}),{rootMargin:'0px 0px -6% 0px'});
@@ -50,20 +50,19 @@ function render(){
     const stock=CF.stock(p);
     // a sale ends, so it outranks New
     const off=CF.off(p);
-    const badge=off?`<span class="badge sale">${off}% off</span>`:p.isNew?'<span class="badge">New</span>':stock.badge?`<span class="badge low">${stock.badge}</span>`:'';
-    return `<article class="card" data-id="${p.id}">
-      <div class="ph"><a class="phlink" href="${url}" aria-label="View ${p.name}, ${p.desc}" tabindex="-1"></a>${badge}<button class="ib fav" type="button" data-fav="${p.id}" aria-pressed="${store.isSaved(p.id)}" aria-label="Save ${p.name}">${CF.icons.heart}</button>${art(p.type,COL[c])}</div>
+    const badge=off?`<span class="badge sale">${off}% off</span>`:p.isNew?'<span class="badge">New</span>':stock.badge?`<span class="badge low">${CF.esc(stock.badge)}</span>`:'';
+    return `<article class="card" data-id="${CF.esc(p.id)}">
+      <div class="ph"><a class="phlink" href="${url}" aria-label="View ${CF.esc(p.name)}, ${CF.esc(p.desc)}" tabindex="-1"></a>${badge}<button class="ib fav" type="button" data-fav="${CF.esc(p.id)}" aria-pressed="${store.isSaved(p.id)}" aria-label="Save ${CF.esc(p.name)}">${CF.icons.heart}</button>${art(p.type,COL[c])}<button class="add" type="button" data-add="${CF.esc(p.id)}" aria-label="Add ${CF.esc(p.name)} to bag">${CF.icons.bagAdd}<span aria-hidden="true">Add to bag</span></button></div>
       <div class="info">
-        <h2 class="name"><a href="${url}">${p.name}</a></h2>
-        <div class="desc">${p.desc}</div>
+        <h2 class="name"><a href="${url}">${CF.esc(p.name)}</a></h2>
+        <div class="desc">${CF.esc(p.desc)}</div>
         <div class="price">${CF.priceHTML(p.price)}${CF.wasHTML(p)}</div>
         <div class="rate">${CF.stars(p.rate)}<span>${p.rate.toFixed(1)} (${p.rev})</span><span class="vh">Rated ${p.rate} out of 5</span></div>
-        ${p.cols.length>1?`<div class="sw" role="group" aria-label="Colour">${p.cols.map(k=>`<button type="button" data-sw="${p.id}" data-c="${k}" aria-pressed="${k===c}" aria-label="${CF.colourName(k)}" style="background:${COL[k]}"></button>`).join('')}</div>`:''}
+        ${p.cols.length>1?`<div class="sw" role="group" aria-label="Colour">${p.cols.map(k=>`<button type="button" data-sw="${CF.esc(p.id)}" data-c="${CF.esc(k)}" aria-pressed="${k===c}" aria-label="${CF.esc(CF.colourName(k))}" style="background:${COL[k]}"></button>`).join('')}</div>`:''}
         <div class="row">
-          <button class="add" type="button" data-add="${p.id}" aria-label="Add ${p.name} to bag">${CF.icons.bagAdd}</button>
-          <button class="inside" type="button" data-inside="${p.id}" aria-expanded="false" aria-controls="sp-${p.id}">See inside <i aria-hidden="true"></i></button>
+          <button class="inside" type="button" data-inside="${CF.esc(p.id)}" aria-expanded="false" aria-controls="sp-${CF.esc(p.id)}">See inside <i aria-hidden="true"></i></button>
         </div>
-        <div class="specs" id="sp-${p.id}"><div><ul>${Object.entries(p.spec).map(([k,v])=>`<li><b>${k}</b><span>${v}</span></li>`).join('')}</ul></div></div>
+        <div class="specs" id="sp-${CF.esc(p.id)}"><div><ul>${Object.entries(p.spec).map(([k,v])=>`<li><b>${CF.esc(k)}</b><span>${CF.esc(v)}</span></li>`).join('')}</ul></div></div>
       </div></article>`;
   }).join('');
   $('grid').querySelectorAll('.card').forEach((el,i)=>{el.style.transitionDelay=Math.min(i%4,3)*70+'ms';cardIO.observe(el)});

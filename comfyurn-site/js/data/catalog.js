@@ -17,9 +17,9 @@ const PRODUCTS=[
  {id:'quarry',name:'Quarry',desc:'Kitchen island, stone top',type:'island',room:'kitchen',price:4200,rate:4.8,rev:37,cols:['stone','ink'],tags:[],pop:14,isNew:1,made:1,feats:['Stone top'],spec:{Top:'Honed limestone, 30 mm',Body:'Oak veneer on birch ply',Storage:'3 drawers, 2 cupboards',Warranty:'15 yr'}},
  {id:'table8',name:'Long Table',desc:'Dining table, seats 8',type:'dining',room:'kitchen',price:2300,rate:4.7,rev:59,cols:['oak','ink','white'],tags:['oak'],pop:10,isNew:0,qty:0,eta:'2026-11-20',feats:['Seats 8'],spec:{Top:'Solid oak, 40 mm, 220 cm',Joints:'Mortise and tenon',Finish:'Hardwax oil, food safe',Warranty:'25 yr'}},
  {id:'porch',name:'Porch',desc:'Rocking chair, teak',type:'rocker',room:'balcony',price:820,rate:4.9,rev:83,cols:['oak','white'],tags:['out'],pop:8,isNew:0,qty:8,spec:{Frame:'Solid teak, outdoor grade',Cushion:'Quick-dry foam, UV fabric',Hardware:'Marine stainless steel',Warranty:'10 yr outdoor'}},
- {id:'nest',name:'Nest',desc:'Hanging swing chair, rattan',type:'swing',room:'balcony',price:640,rate:4.6,rev:72,cols:['rattan'],tags:['out'],pop:13,isNew:0,qty:16,feats:['Up to 130 kg'],spec:{Body:'Synthetic rattan, UV safe',Frame:'Powder-coated steel',Load:'Up to 130 kg',Warranty:'5 yr outdoor'}},
+ {id:'nest',name:'Nest',desc:'Hanging swing chair, rattan',type:'swing',room:'balcony',price:640,rate:4.6,rev:72,cols:['stone','rattan'],tags:['out'],pop:13,isNew:0,qty:16,feats:['Up to 130 kg'],spec:{Body:'Synthetic rattan, UV safe',Frame:'Powder-coated steel',Load:'Up to 130 kg',Warranty:'5 yr outdoor'}},
  {id:'dune',name:'Dune',desc:'Sun lounger, adjustable',type:'lounger',room:'balcony',price:420,rate:4.4,rev:46,cols:['white','sea'],tags:['out'],pop:17,isNew:1,made:1,was:560,feats:['5 back positions'],spec:{Frame:'Solid teak, outdoor grade',Back:'5 positions',Sling:'Quick-dry mesh',Warranty:'5 yr outdoor'}},
- {id:'lumen',name:'Lumen',desc:'Table lamp, linen shade',type:'lamp',room:'decor',price:190,rate:4.7,rev:140,cols:['stone','sea'],tags:[],pop:15,isNew:0,qty:40,spec:{Base:'Turned oak',Shade:'Pleated linen',Bulb:'E27, warm 2700K',Cable:'Fabric, 2 m'}},
+ {id:'lumen',name:'Lumen',desc:'Table lamp, linen shade',type:'lamp',room:'decor',price:190,rate:4.7,rev:140,cols:['stone','sea'],tags:['oak'],pop:15,isNew:0,qty:40,spec:{Base:'Turned oak',Shade:'Pleated linen',Bulb:'E27, warm 2700K',Cable:'Fabric, 2 m'}},
  {id:'halo',name:'Halo',desc:'Pendant light, 40 cm',type:'pendant',room:'decor',price:260,rate:4.5,rev:52,cols:['white','ink'],tags:[],pop:19,isNew:1,was:340,qty:30,feats:['Adjustable drop'],spec:{Shade:'Spun aluminium, matte',Drop:'Adjustable, up to 150 cm',Bulb:'E27, warm 2700K',Warranty:'5 yr'}},
  {id:'urn',name:'Urn',desc:'Ceramic vase, 34 cm',type:'vase',room:'decor',price:85,rate:4.8,rev:210,cols:['white','sea','rose'],tags:[],pop:16,isNew:0,qty:85,feats:['Hand thrown'],spec:{Material:'Stoneware, hand thrown',Glaze:'Matte, watertight',Height:'34 cm',Care:'Hand wash'}},
  {id:'sandbar',name:'Sandbar',desc:'Flatweave rug, 200 × 300',type:'rug',room:'decor',price:540,rate:4.6,rev:77,cols:['sand','stone'],tags:[],pop:18,isNew:0,was:690,qty:12,feats:['Reversible'],spec:{Fiber:'Jute and wool',Weave:'Hand-loomed flatweave',Backing:'None, reversible',Care:'Vacuum, spot clean'}},
@@ -91,13 +91,13 @@ const CARE={
 };
 /* crops of the suite photos that show a product in the room */
 const PHOTOS={
- 'haven-l':{src:'assets/images/suite.jpg',pos:'86% 100%',size:'320%'},
- quarry:{src:'assets/images/suite.jpg',pos:'67% 68%',size:'320%'},
- reef:{src:'assets/images/suite.jpg',pos:'62% 72%',size:'320%'},
- tide:{src:'assets/images/suite.jpg',pos:'51% 59%',size:'320%'},
- harbor:{src:'assets/images/suite.jpg',pos:'50% 34%',size:'320%'},
- porch:{src:'assets/images/balcony.jpg',pos:'0% 100%',size:'300%'},
- nest:{src:'assets/images/balcony.jpg',pos:'18% 57%',size:'300%'}
+ 'haven-l':{src:'assets/images/suite.webp',pos:'86% 100%',size:'320%'},
+ quarry:{src:'assets/images/suite.webp',pos:'67% 68%',size:'320%'},
+ reef:{src:'assets/images/suite.webp',pos:'62% 72%',size:'320%'},
+ tide:{src:'assets/images/suite.webp',pos:'51% 59%',size:'320%'},
+ harbor:{src:'assets/images/suite.webp',pos:'50% 34%',size:'320%'},
+ porch:{src:'assets/images/balcony.webp',pos:'0% 100%',size:'300%'},
+ nest:{src:'assets/images/balcony.webp',pos:'18% 57%',size:'300%'}
 };
 const ROOMS=[['all','All products'],['living','Living room'],['bedroom','Bedroom'],['kitchen','Kitchen and dining'],['balcony','Balcony'],['decor','Lighting and decor']];
 const TILES=[['sofa','Sofas'],['armchair','Armchairs'],['coffee','Tables'],['bed','Beds'],['mattress','Mattresses'],['wardrobe','Storage'],['stool','Bar stools'],['rocker','Outdoor'],['lamp','Lighting'],['vase','Decor']];

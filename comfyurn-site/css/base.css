@@ -2,10 +2,16 @@
    Every page loads this first. Page styles live in home.css and shop.css. */
 /* design tokens */
 :root{
-  --canvas:#EEF1EE;
-  --panel:#E2E9E6;
-  --panel-deep:#D3DEDA;
-  --card:#F5F7F5;
+  /* near-white and near-black with a faint sea-green bias; teal stays on primary buttons and small details */
+  --canvas:#FAFAF8;
+  --surface:#FFFFFF;       /* drawers, dialogs, cards that sit on the canvas */
+  --tile:#EFEEEA;          /* studio grey behind product images */
+  --ink:#121816;           /* text and the dark bands */
+  --ink-2:#4A524F;
+  --ink-3:#8A918E;         /* borders and disabled controls only, too light for text */
+  --panel:#F1F0EC;
+  --panel-deep:#E6E4DE;
+  --card:var(--tile);
   --accent:#1F7A80;
   --accent-hover:#175F64;
   --accent-muted:rgba(31,122,128,.22);
@@ -13,20 +19,28 @@
   --rose:#C98F86;
   --ok:#3B8A63;            /* in-stock dot */
   --error:#A8433A;         /* form errors */
-  --text-primary:#17262E;
-  --text-secondary:#46585F;
-  --line:#8FA39F;          /* interactive and strong borders */
-  --hairline:#C3CFCB;      /* quiet dividers */
+  --text-primary:var(--ink);
+  --text-secondary:var(--ink-2);
+  --line:var(--ink-3);     /* interactive and strong borders */
+  --hairline:rgba(18,24,22,.14);  /* quiet dividers */
+  --on-ink:#FAFAF8;        /* text on the dark bands */
+  --on-ink-2:#A3ABA7;      /* secondary text on the dark bands */
+  --ink-line:rgba(250,250,248,.16);  /* dividers on the dark bands */
+  --on-ink-error:#E7948A;  /* form errors on the dark bands */
+  --shadow:0 24px 48px -28px rgba(18,24,22,.45);  /* the one shadow: menus, drawers, dialogs */
+  --r-1:2px;               /* buttons, badges */
+  --r-2:6px;               /* inputs, chips, panels; images and bands are square */
   --oak:#C8A67A;
   --oak-deep:#A98456;
   --linen:#F4EFE4;
   /* frosted glass for the bars and their menus: a light tint, a strong blur that also lifts colour, a bright top edge */
-  --glass:rgba(238,241,238,.58);
-  --glass-panel:rgba(238,241,238,.52);
-  --glass-solid:rgba(238,241,238,.96);
+  --glass:rgba(250,250,248,.62);
+  --glass-panel:rgba(250,250,248,.56);
+  --glass-solid:rgba(250,250,248,.96);
   --glass-edge:rgba(255,255,255,.6);
   --glass-blur:saturate(180%) blur(22px);  /* repeated literally for -webkit-backdrop-filter, which older Safari ignores with var() */
-  --display:'Familjen Grotesk',system-ui,sans-serif;
+  --serif:'Instrument Serif',Georgia,'Times New Roman',serif;  /* headlines; <em> inside one sets the italic half */
+  --display:'DM Sans',system-ui,sans-serif;                   /* brand, product names, prices: the body face at heavier weights */
   --body:'DM Sans',system-ui,sans-serif;
   --mono:'DM Mono',ui-monospace,monospace;
   --ease:cubic-bezier(.22,.7,.2,1);
@@ -36,14 +50,17 @@
 /* reset and type */
 *{box-sizing:border-box;margin:0}
 html{overflow-x:hidden;overflow-x:clip;scroll-behavior:smooth;background:var(--canvas)}
-body{overflow-x:hidden;overflow-x:clip;background:var(--canvas);color:var(--text-primary);font:400 17px/1.6 var(--body);-webkit-font-smoothing:antialiased;animation:pageIn .9s var(--ease) both}
-@keyframes pageIn{from{opacity:0}to{opacity:1}}
+body{overflow-x:hidden;overflow-x:clip;background:var(--canvas);color:var(--text-primary);font:400 17px/1.6 var(--body);-webkit-font-smoothing:antialiased}
+/* body is its own stacking layer, so pictures placed behind their text with z-index:-1 (the static hero photo, the
+   drifting light) paint above the page background instead of under it */
+body{isolation:isolate}
 img{display:block;max-width:100%}
 a{color:inherit}
-h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.04;letter-spacing:-.02em}
+h1,h2,h3{font-family:var(--serif);font-weight:400;line-height:1.02;letter-spacing:-.01em;text-wrap:balance}
+h1 em,h2 em,h3 em{font-style:italic}
 .mono{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-secondary)}
-:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
-.skip{position:absolute;left:-999px;top:8px;background:var(--text-primary);color:var(--canvas);padding:10px 14px;border-radius:8px;z-index:100}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:var(--r-1)}
+.skip{position:absolute;left:-999px;top:8px;background:var(--text-primary);color:var(--canvas);padding:10px 14px;border-radius:var(--r-1);z-index:100}
 .skip:focus{left:8px}
 .vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 /* struck prices carry hidden "Was" text; keep it inside the price so it cannot widen a scrolling row */
@@ -63,42 +80,84 @@ button{font:inherit;color:inherit}
 /* brand mark and buttons */
 .brand{font:600 22px/1 var(--display);letter-spacing:-.03em;text-decoration:none;display:flex;align-items:center;gap:8px}
 .brand svg{width:26px;height:26px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--accent);color:#fff;text-decoration:none;font:500 16px/1 var(--body);padding:15px 26px;border-radius:999px;border:0;cursor:pointer;transition:background .35s var(--ease-soft),transform .35s var(--ease)}
-.btn:hover{background:var(--accent-hover);transform:translateY(-2px)}
-.btn.sm{padding:11px 20px;font-size:14px}
-.btn.ghost{background:transparent;color:var(--text-primary);box-shadow:inset 0 0 0 1.5px var(--text-primary)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--accent);color:#fff;text-decoration:none;font:500 13px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;padding:17px 28px;border-radius:var(--r-1);border:0;cursor:pointer;transition:background .35s var(--ease-soft)}
+.btn:hover{background:var(--accent-hover)}
+.btn.sm{padding:12px 18px;font-size:12px}
+.btn.ghost{background:transparent;color:var(--text-primary);box-shadow:inset 0 0 0 1px var(--text-primary)}
 .btn.ghost:hover{background:var(--text-primary);color:var(--canvas)}
 @media(pointer:coarse){.btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center}}
+/* secondary call to action: capitals, an arrow, a 1px underline ("SEE INSIDE →") */
+.tlink{display:inline-flex;align-items:center;gap:10px;padding:6px 0 5px;border-bottom:1px solid currentColor;font:500 13px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:inherit;background:none;cursor:pointer}
+.tlink::after{content:"→";content:"→"/"";transition:transform .35s var(--ease)}
+.tlink:hover::after{transform:translateX(4px)}
+@media(pointer:coarse){.tlink{min-height:44px}}
 
-/* site footer (js/site/footer.js): newsletter band, link columns, base row, fictional-brand note */
-.site-foot{background:var(--panel);color:var(--text-primary)}
-.news{background:var(--panel-deep)}
+/* shared editorial pieces: dark ink bands, the product tile (CF.tileHTML) and the layer tabs used by the home
+   "Inside the sofa" band and the product page Inside band (js/site/tabs.js) */
+.dark{background:var(--ink);color:var(--on-ink)}
+.dark .mono,.dark .lede{color:var(--on-ink-2)}
+.ptile{display:grid;gap:4px;text-decoration:none;color:inherit}
+.pt-ph{aspect-ratio:1;max-width:100%;background:var(--tile);display:grid;place-items:center;overflow:hidden;margin-bottom:8px}
+.pt-ph svg{width:78%;height:78%;transition:transform .8s var(--ease)}
+.ptile:hover .pt-ph svg{transform:scale(1.03)}
+.pt-name{font:500 12px/1.3 var(--body);letter-spacing:.12em;text-transform:uppercase}
+.pt-price{font-size:14px;color:var(--text-secondary)}
+.ptile:hover .pt-name{text-decoration:underline;text-underline-offset:3px}
+.pt-desc{font-size:14px;color:var(--text-secondary);line-height:1.35}
+.pt-price s{margin-left:8px;color:var(--text-secondary)}
+.layer{transition:opacity .45s var(--ease-soft)}
+/* a picked layer tab dims the other layers of the drawing beside it */
+:is(.lab,.inside-art)[data-pick="0"] .layer:not([data-i="0"]),:is(.lab,.inside-art)[data-pick="1"] .layer:not([data-i="1"]),
+:is(.lab,.inside-art)[data-pick="2"] .layer:not([data-i="2"]),:is(.lab,.inside-art)[data-pick="3"] .layer:not([data-i="3"]),
+:is(.lab,.inside-art)[data-pick="4"] .layer:not([data-i="4"]){opacity:.22}
+.ltabs{display:grid;border-top:1px solid var(--ink-line)}
+.ltabs [role="tab"]{display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:baseline;gap:12px;padding:16px 0;background:none;border:0;border-bottom:1px solid var(--ink-line);color:var(--on-ink-2);text-align:left;cursor:pointer;transition:color .3s var(--ease-soft)}
+.ltabs [role="tab"]:hover,.ltabs .on,.ltabs [aria-selected="true"]{color:var(--on-ink)}
+.ltabs .n{font:500 12px var(--mono);color:var(--accent-light)}
+.lt-name{font:400 clamp(24px,2.4vw,34px)/1.1 var(--serif)}
+.ltabs [aria-selected="true"] .lt-name{font-style:italic}
+.lt-spec{font:400 12px var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.lpanel{padding-top:26px}
+.lpanel h3{font-size:clamp(28px,2.6vw,36px);margin-bottom:10px}
+.lpanel p{color:var(--on-ink-2);max-width:44ch}
+.lpanel [data-i]:not([hidden])~[data-i]:not([hidden]){margin-top:24px}   /* without JavaScript every layer shows, one under the other; with it, only the picked one, at the top */
+.spec{font:400 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;margin-top:10px}
+
+/* site footer (js/site/footer.js): a dark ink band with the newsletter, link columns, a large serif sign-off,
+   the base row and the fictional-brand note */
+.site-foot{background:var(--ink);color:var(--on-ink)}
+.news{border-bottom:1px solid var(--ink-line)}
 .news-in{max-width:1480px;margin:0 auto;padding:40px max(16px,3vw);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px 40px}
-.news-t{font:500 clamp(20px,2vw,26px)/1.3 var(--display);letter-spacing:-.01em;max-width:30ch}
-.news-t b{font-weight:600}
+.news-t{font:400 clamp(24px,2.4vw,32px)/1.2 var(--serif);max-width:30ch}
+.news-t b{font-weight:400;font-style:italic}
 .news-f{flex:1;max-width:540px;display:flex;flex-wrap:wrap;gap:10px}
-.news-f input{flex:1;min-width:0;height:52px;padding:0 22px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--text-primary);font:400 16px var(--body)}
+.news-f input{flex:1;min-width:0;height:52px;padding:0 22px;border-radius:var(--r-2);border:1px solid var(--ink-line);background:rgba(250,250,248,.06);color:var(--on-ink);font:400 16px var(--body)}
+.news-f input::placeholder{color:var(--on-ink-2)}
 .news-f input:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
-.news-f.bad input{border-color:var(--error);box-shadow:0 0 0 1px var(--error)}
+.news-f.bad input{border-color:var(--on-ink-error);box-shadow:0 0 0 1px var(--on-ink-error)}
 .news-f .btn{height:52px}
-.news-msg{flex-basis:100%;font-size:14px;color:var(--text-secondary);padding-left:22px}
+.news-msg{flex-basis:100%;font-size:14px;color:var(--on-ink-2);padding-left:2px}
 .news-msg:empty{display:none}
-.news-f.bad .news-msg{color:var(--error)}
+.news-f.bad .news-msg{color:var(--on-ink-error)}
 .foot-cols{max-width:1480px;margin:0 auto;padding:56px max(16px,3vw) 40px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px}
-.fcol h2{font:500 12px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:16px}
+.fcol h2{font:500 12px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--on-ink-2);margin-bottom:16px}
 .fcol h2 button{display:none}
 .fcol ul{list-style:none;padding:0;display:grid;gap:10px}
 .fcol a:not(.btn){text-decoration:none;font-size:15.5px}
-.fcol a:not(.btn):hover{text-decoration:underline;text-underline-offset:3px;color:var(--accent)}
-.visit p{color:var(--text-secondary);font-size:15.5px;max-width:38ch;margin-bottom:18px}
-.foot-base{max-width:1480px;margin:0 auto;padding:22px max(16px,3vw);border-top:1px solid var(--hairline);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 24px}
-.foot-note{max-width:1480px;margin:0 auto;padding:0 max(16px,3vw) 40px;color:var(--text-secondary);font-size:13.5px}
+.fcol a:not(.btn):hover{text-decoration:underline;text-underline-offset:3px;color:var(--accent-light)}
+.visit p{color:var(--on-ink-2);font-size:15.5px;max-width:38ch;margin-bottom:18px}
+.site-foot .btn.ghost{color:var(--on-ink);box-shadow:inset 0 0 0 1px var(--on-ink)}
+.site-foot .btn.ghost:hover{background:var(--on-ink);color:var(--ink)}
+.foot-sign{max-width:1480px;margin:0 auto;padding:clamp(24px,4vw,56px) max(16px,3vw) clamp(32px,5vw,72px);font:400 clamp(64px,13vw,200px)/.9 var(--serif);letter-spacing:-.02em}
+.foot-base{max-width:1480px;margin:0 auto;padding:22px max(16px,3vw);border-top:1px solid var(--ink-line);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 24px}
+.foot-base .mono{color:var(--on-ink-2)}
+.foot-note{max-width:1480px;margin:0 auto;padding:0 max(16px,3vw) 40px;color:var(--on-ink-2);font-size:13.5px}
 @media(max-width:720px){
   .news-f{flex-basis:100%;max-width:none}
   .foot-cols{grid-template-columns:1fr;gap:0;padding-top:24px}
-  .fcol{border-bottom:1px solid var(--hairline)}
+  .fcol{border-bottom:1px solid var(--ink-line)}
   .fcol h2{margin:0}
-  .fcol h2 button{display:flex;width:100%;justify-content:space-between;align-items:center;min-height:56px;background:none;border:0;padding:0;cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit;color:var(--text-primary)}
+  .fcol h2 button{display:flex;width:100%;justify-content:space-between;align-items:center;min-height:56px;background:none;border:0;padding:0;cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit;color:var(--on-ink)}
   .fcol h2 button+span{display:none}
   .fcol h2 svg{width:18px;height:18px;transition:transform .35s var(--ease)}
   .fcol.open h2 svg{transform:rotate(180deg)}
@@ -110,14 +169,14 @@ button{font:inherit;color:inherit}
 }
 
 /* email signup popup (js/site/signup.js) */
-.signup{margin:auto;width:min(760px,calc(100% - 32px));padding:0;border:0;border-radius:18px;overflow:hidden;background:var(--canvas);color:var(--text-primary);box-shadow:0 30px 80px -30px rgba(23,38,46,.7)}
+.signup{margin:auto;width:min(760px,calc(100% - 32px));padding:0;border:0;border-radius:var(--r-2);overflow:hidden;background:var(--canvas);color:var(--text-primary);box-shadow:0 30px 80px -30px rgba(18,24,22,.7)}
 .signup[open]{display:grid;grid-template-columns:1fr 1fr}
-.signup::backdrop{background:rgba(23,38,46,.5)}
-.su-img{background:url(../assets/images/balcony.jpg) 20% 60%/cover no-repeat;min-height:100%}
+.signup::backdrop{background:rgba(18,24,22,.5)}
+.su-img{background:url(../assets/images/balcony.webp) 20% 60%/cover no-repeat;min-height:100%}
 .su-body{position:relative;display:grid;gap:12px;align-content:center;padding:44px 34px 34px}
 .su-body h2{font-size:clamp(28px,3vw,36px)}
 .su-body p{color:var(--text-secondary);font-size:15.5px}
-.su-body input{height:50px;padding:0 16px;border-radius:10px;border:1px solid var(--line);background:var(--card);font:400 16px var(--body);color:var(--text-primary)}
+.su-body input{height:50px;padding:0 16px;border-radius:var(--r-2);border:1px solid var(--line);background:var(--card);font:400 16px var(--body);color:var(--text-primary)}
 .su-body input[aria-invalid="true"]{border-color:var(--error);box-shadow:0 0 0 1px var(--error)}
 .su-msg{color:var(--error)!important;font-size:14px!important}
 .su-msg:empty{display:none}
@@ -130,10 +189,10 @@ button{font:inherit;color:inherit}
 
 /* help button and panel (js/site/help.js) */
 .help{position:fixed;right:max(16px,2vw);bottom:max(16px,2vw);z-index:55;display:grid;justify-items:end;gap:12px}
-.help-b{width:58px;height:58px;border-radius:50%;border:0;background:var(--text-primary);color:var(--canvas);cursor:pointer;display:grid;place-items:center;box-shadow:0 14px 30px -14px rgba(23,38,46,.7);transition:transform .35s var(--ease),background .3s var(--ease-soft)}
+.help-b{width:58px;height:58px;border-radius:50%;border:0;background:var(--text-primary);color:var(--canvas);cursor:pointer;display:grid;place-items:center;box-shadow:0 14px 30px -14px rgba(18,24,22,.7),0 0 0 1px rgba(250,250,248,.22);transition:transform .35s var(--ease),background .3s var(--ease-soft)}   /* the light ring keeps it visible over the dark bands */
 .help-b:hover{transform:translateY(-2px);background:var(--accent)}
 .help-b svg{width:26px;height:26px}
-.help-p{width:min(360px,calc(100vw - 32px));max-height:min(70vh,560px);overflow:auto;border-radius:16px;background:var(--canvas);box-shadow:0 30px 70px -30px rgba(23,38,46,.7),0 0 0 1px var(--hairline)}
+.help-p{width:min(360px,calc(100vw - 32px));max-height:min(70vh,560px);overflow:auto;border-radius:var(--r-2);background:var(--canvas);box-shadow:0 30px 70px -30px rgba(18,24,22,.7),0 0 0 1px var(--hairline)}
 .help-p[hidden]{display:none}
 .help-head{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;padding:16px 10px 12px 20px;background:var(--text-primary);color:var(--canvas)}
 .help-head h2{font-size:20px}

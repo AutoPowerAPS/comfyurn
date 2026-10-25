@@ -1,6 +1,7 @@
 .DS_Store
 .agents/**
 .claude/**
+.venv/**
 
 10K_website_demo/**
 10K-websites/**

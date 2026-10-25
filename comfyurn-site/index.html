@@ -3,19 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- Content Security Policy: scripts only from this site, styles also from Google Fonts. Inline style attributes are
+     allowed (the pages set crops and colours with them). Framing protection needs host headers: see README "Hosting headers" -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>Comfyurn | Furniture with nothing hidden</title>
 <meta name="description" content="Comfyurn is a fictional furniture and home decor brand. Walk a sunlit suite, then open up the sofa and the bed layer by layer and see where your money goes.">
-<meta name="theme-color" content="#EEF1EE">
+<meta name="theme-color" content="#FAFAF8">
 <meta property="og:title" content="Comfyurn | Furniture with nothing hidden">
 <meta property="og:description" content="Walk a sunlit suite. Then open up the sofa and the bed and see what is inside.">
 <meta property="og:type" content="website">
 <!-- DEPLOY STEP: patch og:image and og:url with the live absolute URL before zipping -->
 <meta property="og:image" content="assets/images/hero-ending.jpg">
 <meta property="og:url" content="">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23EEF1EE'/%3E%3Cpath d='M9 12h14v3a3 3 0 0 1-3 3h-8a3 3 0 0 1-3-3z M11 18v4M21 18v4' fill='none' stroke='%231F7A80' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23FAFAF8'/%3E%3Cpath d='M9 12h14v3a3 3 0 0 1-3 3h-8a3 3 0 0 1-3-3z M11 18v4M21 18v4' fill='none' stroke='%231F7A80' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500&family=Familjen+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400..600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<!-- the scrolling hero paints this poster first; the media query is "none of GATES" in hero-scrub.js, so only screens that
+     get the scrolling hero fetch it. Keep the two in step. -->
+<link rel="preload" as="image" type="image/webp" href="assets/images/hero-poster.webp" media="not ((max-width: 720px) or ((orientation: portrait) and (max-width: 1024px)) or ((orientation: portrait) and (pointer: coarse)) or ((orientation: landscape) and (pointer: coarse) and (max-height: 560px)) or (prefers-reduced-motion: reduce))">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/home.css">
 </head>
@@ -36,9 +42,9 @@
     </div>
   </div>
   <div class="nlwrap"><nav class="nlinks" aria-label="Main">
+    <a class="nl" href="#rooms">Shop by room</a>
     <a class="nl" href="#inside">Inside the sofa</a>
     <a class="nl" href="#bed">Inside the bed</a>
-    <a class="nl" href="#rooms">The suite</a>
     <a class="nl" href="#questions">Questions</a>
     <a class="nl" href="products.html">Shop all</a>
   </nav></div>
@@ -46,9 +52,9 @@
     <nav aria-label="Menu">
       <div class="mono">Explore the suite</div>
       <div class="np-links">
+        <a class="nl" href="#rooms">Shop by room</a>
         <a class="nl" href="#inside">Inside the sofa</a>
         <a class="nl" href="#bed">Inside the bed</a>
-        <a class="nl" href="#rooms">The suite</a>
         <a class="nl" href="#questions">Questions</a>
         <a class="nl" href="products.html">Shop all</a>
       </div>
@@ -68,7 +74,7 @@
 
     <div class="band" data-a="0" data-b="0.25">
       <div class="mono">Comfyurn · A suite with nothing hidden</div>
-      <h1 data-split>Walk in. Nothing is hidden.</h1>
+      <h1 data-split>Walk in. Nothing is <em>hidden.</em></h1>
       <p class="sub">Every piece in this suite shows what is inside it, and what you pay for.</p>
     </div>
     <div class="band" data-a="0.29" data-b="0.54">
@@ -85,31 +91,60 @@
       <div class="mono">03 · Your turn</div>
       <h2 data-split>Now come closer.</h2>
       <p class="sub">Scroll on. We open up the sofa and the bed, layer by layer.</p>
-      <div class="cta-row"><a class="btn" href="#inside">See inside</a></div>
+      <div class="cta-row"><a class="tlink" href="#inside">See inside</a></div>
     </div>
 
     <svg class="ring" id="ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="126" style="stroke-dashoffset:var(--ld,126)"/></svg>
     <div class="chev" aria-hidden="true">SCROLL ↓</div>
     <div class="cue mono" id="cue" aria-hidden="true">SCROLL<i></i></div>
+    <button class="vpause" id="heroPause" type="button" aria-pressed="false" aria-label="Pause the video"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path class="ip" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/><path class="ipl" d="M8 5v14l11-7z"/></svg></button>
   </div>
 </section>
 
 <!-- STATIC HERO -->
 <section class="static-hero" aria-label="Comfyurn">
-  <img src="assets/images/hero-ending.jpg" alt="A bright beachfront suite with a long sofa, a stone bar island, and a hallway leading to a bedroom" loading="lazy" decoding="async">
+  <img src="assets/images/hero-ending.webp" srcset="assets/images/hero-ending-960.webp 960w, assets/images/hero-ending.webp 1376w" sizes="100vw" alt="A bright beachfront suite with a long sofa, a stone bar island, and a hallway leading to a bedroom" width="1376" height="768" loading="lazy" decoding="async">
   <div class="inner">
     <div class="mono">Comfyurn · A suite with nothing hidden</div>
-    <h1>Walk in. Nothing is hidden.</h1>
+    <h1>Walk in. Nothing is <em>hidden.</em></h1>
     <p>Every piece in this suite shows what is inside it, and what you pay for.</p>
-    <a class="btn" href="#inside">See inside</a>
+    <a class="tlink" href="#inside">See inside</a>
   </div>
 </section>
 
-<!-- SOFA -->
-<section class="s reveal" id="inside">
+<!-- SHOP BY ROOM -->
+<section class="s" id="rooms" aria-labelledby="roomsH">
+  <div class="wrap">
+    <div class="mono">Shop by room</div>
+    <h2 class="big" id="roomsH">Four rooms, <em>every piece priced.</em></h2>
+    <div class="rtabs" role="tablist" aria-label="Rooms">
+      <button type="button" role="tab" id="rt-living" aria-selected="true" aria-controls="roomPanel" data-room="living">Living</button>
+      <button type="button" role="tab" id="rt-kitchen" aria-selected="false" aria-controls="roomPanel" data-room="kitchen" tabindex="-1">Kitchen</button>
+      <button type="button" role="tab" id="rt-bedroom" aria-selected="false" aria-controls="roomPanel" data-room="bedroom" tabindex="-1">Bedroom</button>
+      <button type="button" role="tab" id="rt-balcony" aria-selected="false" aria-controls="roomPanel" data-room="balcony" tabindex="-1">Balcony</button>
+    </div>
+    <div class="rpanel" id="roomPanel" role="tabpanel" aria-labelledby="rt-living" tabindex="0">
+      <div class="rp-img"><img src="assets/images/balcony.webp" alt="The living area: a linen sofa and an oak coffee table on a jute rug" width="1920" height="1072" loading="lazy" decoding="async" style="object-position:88% 74%;transform-origin:88% 74%;--z:1.6"></div>
+      <div class="rp-txt">
+        <div class="mono rp-from"></div>
+        <h3>Living room</h3>
+        <p>A deep linen sofa and low oak tables made for slow evenings.</p>
+        <a class="tlink" href="products.html#living">Shop living</a>
+        <div class="rp-loop">
+          <div class="rp-thumbs" id="roomThumbs"></div>
+        </div>
+        <div class="rp-arrows"><button class="arrow" id="roomPrev" type="button" aria-controls="roomThumbs" aria-label="Previous pieces" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button class="arrow" id="roomNext" type="button" aria-controls="roomThumbs" aria-label="Next pieces" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div>
+      </div>
+    </div>
+    <p class="band-foot"><a class="tlink" href="products.html">Shop all products</a></p>
+  </div>
+</section>
+
+<!-- INSIDE THE SOFA (dark band) -->
+<section class="s dark reveal" id="inside">
   <div class="wrap">
     <div class="part" style="--i:0"><div class="mono">The Haven sofa · Hold to open</div></div>
-    <h2 class="big part" style="--i:1">Press and hold. Watch it open.</h2>
+    <h2 class="big part" style="--i:1">Press and hold. <em>Watch it open.</em></h2>
     <p class="lede part" style="--i:2">Four layers decide whether a sofa still feels good in five years. Most shops hide all four. Hold the button and we show you each one.</p>
 
     <div class="sofa-grid part" style="--i:3">
@@ -121,14 +156,14 @@
               <pattern id="pores" width="22" height="18" patternUnits="userSpaceOnUse"><circle cx="5" cy="5" r="2.2" fill="#E4D9BF"/><circle cx="16" cy="12" r="1.6" fill="#E4D9BF"/><circle cx="12" cy="3" r="1" fill="#E4D9BF"/></pattern>
               <pattern id="grain" width="120" height="14" patternUnits="userSpaceOnUse"><path d="M0 4c30-4 60 4 120 0M0 10c40 4 70-3 120 1" fill="none" stroke="#9A7647" stroke-width="1" opacity=".55"/></pattern>
             </defs>
-            <g class="layer" data-i="0"><rect x="60" y="60" width="520" height="70" rx="26" fill="#F4EFE4" stroke="#B9AD8F" stroke-width="1.5"/><rect x="60" y="60" width="520" height="70" rx="26" fill="url(#weave)"/><text x="78" y="52">01 · LINEN COVER</text></g>
-            <g class="layer" data-i="1"><rect x="60" y="150" width="520" height="110" rx="22" fill="#F6F2E8" stroke="#B9AD8F" stroke-width="1.5"/><rect x="60" y="150" width="520" height="110" rx="22" fill="url(#pores)"/><text x="78" y="142">02 · DENSE FOAM</text></g>
-            <g class="layer" data-i="2"><rect x="60" y="280" width="520" height="80" rx="14" fill="#DCE5E4" stroke="#8FA39F" stroke-width="1.5"/>
+            <g class="layer" data-i="0"><rect x="60" y="60" width="520" height="70" rx="4" fill="#F4EFE4" stroke="#B9AD8F" stroke-width="1.5"/><rect x="60" y="60" width="520" height="70" rx="4" fill="url(#weave)"/><text x="78" y="52">01 · LINEN COVER</text></g>
+            <g class="layer" data-i="1"><rect x="60" y="150" width="520" height="110" rx="4" fill="#F6F2E8" stroke="#B9AD8F" stroke-width="1.5"/><rect x="60" y="150" width="520" height="110" rx="4" fill="url(#pores)"/><text x="78" y="142">02 · DENSE FOAM</text></g>
+            <g class="layer" data-i="2"><rect x="60" y="280" width="520" height="80" rx="4" fill="#DCE5E4" stroke="#8A918E" stroke-width="1.5"/>
               <g fill="none" stroke="#1F7A80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M92 292l14 24-14 24 14 14"/><path d="M162 292l14 24-14 24 14 14"/><path d="M232 292l14 24-14 24 14 14"/><path d="M302 292l14 24-14 24 14 14"/><path d="M372 292l14 24-14 24 14 14"/><path d="M442 292l14 24-14 24 14 14"/><path d="M512 292l14 24-14 24 14 14"/>
               </g><text x="78" y="272">03 · STEEL SPRINGS</text></g>
-            <g class="layer" data-i="3"><rect x="60" y="380" width="520" height="52" rx="10" fill="#C8A67A" stroke="#A98456" stroke-width="1.5"/><rect x="60" y="380" width="520" height="52" rx="10" fill="url(#grain)"/>
-              <rect x="60" y="440" width="520" height="38" rx="9" fill="#C8A67A" stroke="#A98456" stroke-width="1.5"/><rect x="60" y="440" width="520" height="38" rx="9" fill="url(#grain)"/>
+            <g class="layer" data-i="3"><rect x="60" y="380" width="520" height="52" rx="3" fill="#C8A67A" stroke="#A98456" stroke-width="1.5"/><rect x="60" y="380" width="520" height="52" rx="3" fill="url(#grain)"/>
+              <rect x="60" y="440" width="520" height="38" rx="3" fill="#C8A67A" stroke="#A98456" stroke-width="1.5"/><rect x="60" y="440" width="520" height="38" rx="3" fill="url(#grain)"/>
               <g fill="#7C5C35"><circle cx="120" cy="406" r="6"/><circle cx="320" cy="406" r="6"/><circle cx="520" cy="406" r="6"/></g><text x="78" y="372">04 · OAK FRAME</text></g>
           </svg>
         </div>
@@ -136,20 +171,28 @@
           <button class="btn hold" id="hold" type="button" aria-describedby="holdhelp"><span class="fill" aria-hidden="true"></span><span id="holdlabel">Hold to open the sofa</span></button>
           <div class="pct" id="pct" role="status" aria-live="off">0%</div>
         </div>
-        <p id="holdhelp" class="mono" style="margin-top:10px;font-size:11px">Hold the button, or hold Space or Enter.</p>
+        <p id="holdhelp" class="mono">Hold the button, or hold Space or Enter.</p>
       </div>
 
-      <ol class="layers-list" id="layers">
-        <li data-i="0"><span class="n">01</span><div><h3>A cover you can wash.</h3><p>Washed linen with a zip you can reach. Take it off, wash it, put it back. The sofa lasts longer than the cover.</p><div class="spec">Linen blend · 280 gsm · removable</div></div></li>
-        <li data-i="1"><span class="n">02</span><div><h3>Foam that bounces back.</h3><p>Dense core foam wrapped in soft fiber. This is the layer that goes flat first in cheap sofas, so we say its number out loud.</p><div class="spec">35 kg/m³ core · 10 year bounce guarantee</div></div></li>
-        <li data-i="2"><span class="n">03</span><div><h3>Springs under the seat.</h3><p>Steel springs tied by hand, so your weight spreads across the seat instead of sinking in one spot.</p><div class="spec">8-way hand-tied · steel coil</div></div></li>
-        <li data-i="3"><span class="n">04</span><div><h3>An oak frame that holds.</h3><p>Kiln-dried oak with dowel joints and corner blocks. The part that cracks in a cheap sofa is the part we over-build.</p><div class="spec">Solid kiln-dried oak · 25 year frame</div></div></li>
-      </ol>
+      <div class="layers">
+        <div class="ltabs" id="layers" role="tablist" aria-label="Sofa layers" aria-orientation="vertical">
+          <button type="button" role="tab" id="lt-0" aria-selected="true" aria-controls="layerPanel" data-i="0"><span class="n">01</span><span class="lt-name">Linen cover</span><span class="lt-spec">280 gsm</span></button>
+          <button type="button" role="tab" id="lt-1" aria-selected="false" aria-controls="layerPanel" data-i="1" tabindex="-1"><span class="n">02</span><span class="lt-name">Dense foam</span><span class="lt-spec">35 kg/m³</span></button>
+          <button type="button" role="tab" id="lt-2" aria-selected="false" aria-controls="layerPanel" data-i="2" tabindex="-1"><span class="n">03</span><span class="lt-name">Steel springs</span><span class="lt-spec">8-way tied</span></button>
+          <button type="button" role="tab" id="lt-3" aria-selected="false" aria-controls="layerPanel" data-i="3" tabindex="-1"><span class="n">04</span><span class="lt-name">Oak frame</span><span class="lt-spec">25 yr frame</span></button>
+        </div>
+        <div class="lpanel" id="layerPanel" role="tabpanel" aria-labelledby="lt-0" tabindex="0">
+          <div data-i="0"><h3>A cover you can <em>wash.</em></h3><p>Washed linen with a zip you can reach. Take it off, wash it, put it back. The sofa lasts longer than the cover.</p><div class="spec">Linen blend · 280 gsm · removable</div></div>
+          <div data-i="1"><h3>Foam that <em>bounces back.</em></h3><p>Dense core foam wrapped in soft fiber. This is the layer that goes flat first in cheap sofas, so we say its number out loud.</p><div class="spec">35 kg/m³ core · 10 year bounce guarantee</div></div>
+          <div data-i="2"><h3>Springs under <em>the seat.</em></h3><p>Steel springs tied by hand, so your weight spreads across the seat instead of sinking in one spot.</p><div class="spec">8-way hand-tied · steel coil</div></div>
+          <div data-i="3"><h3>An oak frame <em>that holds.</em></h3><p>Kiln-dried oak with dowel joints and corner blocks. The part that cracks in a cheap sofa is the part we over-build.</p><div class="spec">Solid kiln-dried oak · 25 year frame</div></div>
+        </div>
+      </div>
     </div>
 
     <div class="money part reveal" id="money" style="--i:4">
       <div class="mono">Where your money goes · Haven sofa, Rs. 2,400</div>
-      <h3>Two thirds of the price is what you can touch.</h3>
+      <h3>Two thirds of the price is <em>what you can touch.</em></h3>
       <div class="bar" role="img" aria-label="Price split: oak frame 26 percent, foam and springs 22 percent, linen cover 18 percent, hand build 20 percent, delivery and showroom 14 percent">
         <i style="flex:26;--i:0"></i><i style="flex:22;--i:1"></i><i style="flex:18;--i:2"></i><i style="flex:20;--i:3"></i><i style="flex:14;--i:4"></i>
       </div>
@@ -165,13 +208,19 @@
   </div>
 </section>
 
-<!-- BED -->
+<!-- DIPTYCH: two square halves, edge to edge -->
+<section class="diptych" aria-label="Two pieces to start with">
+  <a href="product.html?id=haven&amp;room=living"><span class="dp-art" data-art="sofa" data-col="stone"></span><span class="dp-txt"><span class="mono">The Haven sofa</span><span class="dp-h">Sit deep. <em>Unzip it.</em></span><span class="tlink">Explore the Haven</span></span></a>
+  <a href="product.html?id=tide&amp;room=bedroom"><span class="dp-art" data-art="bed" data-col="oak"></span><span class="dp-txt"><span class="mono">The Tide king bed</span><span class="dp-h">Oak slats, <em>linen on top.</em></span><span class="tlink">Explore the Tide</span></span></a>
+</section>
+
+<!-- INSIDE THE BED -->
 <section class="s reveal" id="bed">
   <div class="wrap">
     <div class="bed-head">
       <div>
         <div class="part" style="--i:0"><div class="mono">The Tide king bed · Five layers</div></div>
-        <h2 class="big part" style="--i:1">Where you sleep, from the top down.</h2>
+        <h2 class="big part" style="--i:1">Where you sleep, <em>from the top down.</em></h2>
       </div>
       <p class="lede part" style="--i:2">A bed is a stack. Each layer has one job. Here is the whole stack, with its numbers.</p>
     </div>
@@ -185,64 +234,75 @@
   </div>
 </section>
 
-<!-- ROOMS -->
-<section class="s reveal" id="rooms">
+<!-- MOST REVIEWED (carousel) -->
+<section class="s" id="lifted" aria-labelledby="liftH">
   <div class="wrap">
-    <div class="part" style="--i:0"><div class="mono">The suite</div></div>
-    <h2 class="big part" style="--i:1">What is in each room.</h2>
-    <p class="lede part" style="--i:2">Every piece in the suite, with its price. Tap a room to see each piece and what is inside it.</p>
-    <p class="part" style="--i:2;margin-top:22px"><a class="btn ghost" href="products.html">Shop all products</a></p>
-    <div class="rooms">
-      <article class="room part" style="--i:3"><div class="ph" role="img" aria-label="Close view of the Haven L linen corner sofa" style="--s:4;background-image:url(assets/images/suite.jpg);background-position:83% 100%"></div><div class="b"><div class="price">From Rs. 190</div><h3>Living</h3><p>A deep linen sofa and low oak tables made for slow evenings.</p><div class="acts"><a class="shop" href="products.html#living">Shop living →</a><button class="tog" type="button" aria-expanded="false" aria-controls="pc-living" aria-label="Show the 4 pieces in the living"><span>4 pieces</span><i aria-hidden="true"></i></button></div><div class="pwrap" id="pc-living"><div><ul class="pieces"><li><a href="product.html?id=haven-l&amp;room=living">Haven L corner sofa</a><b>Rs. 3,650</b></li><li><a href="product.html?id=shore&amp;room=living">Shore oak coffee table</a><b>Rs. 1,900</b></li><li><a href="product.html?id=drift&amp;room=living">Drift lounge armchair</a><b>Rs. 1,290</b></li><li><a href="product.html?id=lumen&amp;room=living">Lumen table lamp</a><b>Rs. 190</b></li></ul></div></div></div></article>
-      <article class="room part" style="--i:4"><div class="ph" role="img" aria-label="Close view of the Quarry stone island and Reef rattan bar stools" style="--s:4;background-image:url(assets/images/suite.jpg);background-position:65% 68%"></div><div class="b"><div class="price">From Rs. 260</div><h3>Kitchen</h3><p>A stone island and rattan stools that sit well by the sea.</p><div class="acts"><a class="shop" href="products.html#kitchen">Shop kitchen →</a><button class="tog" type="button" aria-expanded="false" aria-controls="pc-kitchen" aria-label="Show the 3 pieces in the kitchen"><span>3 pieces</span><i aria-hidden="true"></i></button></div><div class="pwrap" id="pc-kitchen"><div><ul class="pieces"><li><a href="product.html?id=quarry&amp;room=kitchen">Quarry kitchen island</a><b>Rs. 4,200</b></li><li><a href="product.html?id=reef&amp;room=kitchen">Reef bar stool, each</a><b>Rs. 680</b></li><li><a href="product.html?id=halo&amp;room=kitchen">Halo pendant light</a><b>Rs. 260</b></li></ul></div></div></div></article>
-      <article class="room part" style="--i:5"><div class="ph" role="img" aria-label="Close view of the Tide king bed and Harbor wardrobes" style="--s:4;background-image:url(assets/images/suite.jpg);background-position:50% 61%"></div><div class="b"><div class="price">From Rs. 460</div><h3>Bedroom</h3><p>An oak king bed and deep wardrobes in one pale, calm finish.</p><div class="acts"><a class="shop" href="products.html#bedroom">Shop bedroom →</a><button class="tog" type="button" aria-expanded="false" aria-controls="pc-bedroom" aria-label="Show the 4 pieces in the bedroom"><span>4 pieces</span><i aria-hidden="true"></i></button></div><div class="pwrap" id="pc-bedroom"><div><ul class="pieces"><li><a href="product.html?id=tide&amp;room=bedroom">Tide king bed</a><b>Rs. 3,100</b></li><li><a href="product.html?id=tide-m&amp;room=bedroom">Tide Rest mattress</a><b>Rs. 2,600</b></li><li><a href="product.html?id=harbor&amp;room=bedroom">Harbor wardrobe</a><b>Rs. 2,750</b></li><li><a href="product.html?id=cove&amp;room=bedroom">Cove bedside table</a><b>Rs. 460</b></li></ul></div></div></div></article>
-      <article class="room part" style="--i:6"><div class="ph" role="img" aria-label="Close view of the Porch teak rocking chair and Nest rattan swing" style="--s:3;background-image:url(assets/images/balcony.jpg);background-position:7% 100%"></div><div class="b"><div class="price">From Rs. 420</div><h3>Balcony</h3><p>A rocking chair and a swing built to live in sun, salt, and wind.</p><div class="acts"><a class="shop" href="products.html#balcony">Shop balcony →</a><button class="tog" type="button" aria-expanded="false" aria-controls="pc-balcony" aria-label="Show the 3 pieces in the balcony"><span>3 pieces</span><i aria-hidden="true"></i></button></div><div class="pwrap" id="pc-balcony"><div><ul class="pieces"><li><a href="product.html?id=porch&amp;room=balcony">Porch teak rocking chair</a><b>Rs. 820</b></li><li><a href="product.html?id=nest&amp;room=balcony">Nest hanging swing</a><b>Rs. 640</b></li><li><a href="product.html?id=dune&amp;room=balcony">Dune sun lounger</a><b>Rs. 420</b></li></ul></div></div></div></article>
+    <div class="lift-head">
+      <div>
+        <div class="mono">Most reviewed</div>
+        <h2 class="big" id="liftH">The pieces people <em>write about.</em></h2>
+      </div>
+      <div class="arrows">
+        <button class="arrow" id="liftPrev" type="button" aria-controls="liftTrack" aria-label="Previous pieces" aria-disabled="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button class="arrow" id="liftNext" type="button" aria-controls="liftTrack" aria-label="Next pieces"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
     </div>
+    <ul class="track" id="liftTrack" aria-label="Most reviewed pieces"></ul>
+    <p class="band-foot"><a class="tlink" href="products.html">Shop all products</a></p>
   </div>
 </section>
 
-<div class="quote">
-  <img src="assets/images/hero-ending.jpg" alt="" loading="lazy" decoding="async">
-  <div>
-    <blockquote>If we cannot show you what is inside, we should not sell it.</blockquote>
-    <cite class="mono">The Comfyurn promise</cite>
+<!-- VISIT: the suite, 2:1, with the service row -->
+<section class="visit-band" aria-labelledby="visitH">
+  <img src="assets/images/hero-ending.webp" srcset="assets/images/hero-ending-960.webp 960w, assets/images/hero-ending.webp 1376w" sizes="100vw" alt="" width="1376" height="768" loading="lazy" decoding="async">
+  <div class="vb-in">
+    <div class="mono">Book a suite tour</div>
+    <h2 id="visitH">Come and <em>lift the leg.</em></h2>
+    <a class="tlink" href="#book">Book a time</a>
   </div>
-</div>
-
-<!-- FAQ -->
-<section class="s reveal" id="questions">
-  <div class="wrap">
-    <div class="part" style="--i:0"><div class="mono">Questions people ask before they buy</div></div>
-    <h2 class="big part" style="--i:1">Why does it cost this?</h2>
-    <div class="faq part" style="--i:2">
-      <details open><summary>Why is a Comfyurn sofa more than a flat-pack one?</summary><p>A flat-pack sofa saves money in the parts you cannot see: board frames held with staples, and low-density foam. We spend that money on oak, dowel joints and foam you can measure. The price page above shows the split.</p></details>
-      <details><summary>How do I know the frame is real oak?</summary><p>We list the wood and the joint type on every spec card. At the showroom you can lift one front leg. A solid frame lifts the other leg with it. A weak one twists.</p></details>
-      <details><summary>Will the cushions go flat?</summary><p>Foam density is the number that decides this. Our seat foam is 35 kg per cubic meter, and we guarantee its bounce for ten years. The cover unzips so you can turn or replace the foam, not the sofa.</p></details>
-      <details><summary>Does delivery cost extra?</summary><p>Delivery and showroom costs are part of the price bar, not a surprise at checkout. Before you pay, we confirm the piece fits through your door and your stairs.</p></details>
-      <details><summary>What if I do not like it?</summary><p>Sit on it for thirty days. If it is not right, we collect it and refund you.</p></details>
-    </div>
-  </div>
+  <ul class="services">
+    <li>VAT and delivery included</li>
+    <li>Thirty days to decide</li>
+    <li>Every spec printed</li>
+    <li>We check it fits your door</li>
+  </ul>
 </section>
 
-<!-- CTA -->
+<!-- BOOK -->
 <section class="s" id="book">
   <div class="wrap book-grid">
     <div class="reveal">
       <div class="part" style="--i:0"><div class="mono">Book a suite tour</div></div>
-      <h2 class="big part" style="--i:1">Come and lift the leg.</h2>
-      <p class="lede part" style="--i:2;color:#CFDCD8">Tell us what you are furnishing. We send the spec cards for those pieces and hold a time for you to sit on them.</p>
-      <ul class="facts part" style="--i:3"><li><b>Every spec printed.</b>Wood, foam, springs and joints, for every piece.</li><li><b>Thirty days to decide.</b>Sit on it at home. Send it back if it is not right.</li></ul>
-    </div>
-    <div>
-      <form class="form" id="form" novalidate>
+      <h2 class="big part" style="--i:1">Tell us what you are <em>furnishing.</em></h2>
+      <p class="lede part" style="--i:2">We send the spec cards for those pieces and hold a time for you to sit on them.</p>
+      <!-- the send button starts off and book-form.js switches it on: without JavaScript nothing can be sent (a static host
+           rejects a POST, and a GET would put the name and email in the address bar and server logs) -->
+      <form class="form" id="form" method="post" action="#book" novalidate>
+        <noscript><p class="form-note">This is a demo. Booking needs JavaScript, so the button stays off, and nothing you type here is sent anywhere.</p></noscript>
         <label>Your name<input name="name" autocomplete="name" placeholder="Maya Rivers" required></label>
         <label>Your email<input name="email" type="email" autocomplete="email" placeholder="maya@example.com" required></label>
         <label>What are you furnishing?
           <select name="room"><option>Living room</option><option>Bedroom</option><option>Kitchen and dining</option><option>Balcony</option><option>The whole home</option></select>
         </label>
-        <button class="btn" type="submit">Send me the spec cards</button>
+        <button class="btn" type="submit" disabled>Send me the spec cards</button>   <!-- book-form.js switches it on -->
       </form>
-      <div class="thanks" id="thanks" role="status" tabindex="-1"><h3>Thank you.</h3><p>This is a demo site for a fictional brand, so nothing was sent. On a real Comfyurn site, your spec cards would arrive by email.</p></div>
+      <div class="thanks" id="thanks" role="status" tabindex="-1"><h3>Thank <em>you.</em></h3><p>This is a demo site for a fictional brand, so nothing was sent. On a real Comfyurn site, your spec cards would arrive by email.</p></div>
+    </div>
+    <div class="book-ph"><img src="assets/images/suite.webp" alt="The suite sofa in morning light" width="1920" height="1072" loading="lazy" decoding="async" style="object-position:92% 90%;transform-origin:92% 90%;--z:1.34"></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="s reveal" id="questions">
+  <div class="wrap">
+    <div class="part" style="--i:0"><div class="mono">Questions people ask before they buy</div></div>
+    <h2 class="big part" style="--i:1">Why does it <em>cost this?</em></h2>
+    <div class="faq part" style="--i:2">
+      <details open><summary>Why is a Comfyurn sofa more than a flat-pack one?</summary><p>A flat-pack sofa saves money in the parts you cannot see: board frames held with staples, and low-density foam. We spend that money on oak, dowel joints and foam you can measure. The price bar above shows the split.</p></details>
+      <details><summary>How do I know the frame is real oak?</summary><p>We list the wood and the joint type on every spec card. At the showroom you can lift one front leg. A solid frame lifts the other leg with it. A weak one twists.</p></details>
+      <details><summary>Will the cushions go flat?</summary><p>Foam density is the number that decides this. Our seat foam is 35 kg per cubic meter, and we guarantee its bounce for ten years. The cover unzips so you can turn or replace the foam, not the sofa.</p></details>
+      <details><summary>Does delivery cost extra?</summary><p>Delivery and showroom costs are part of the price bar, not a surprise at checkout. Before you pay, we confirm the piece fits through your door and your stairs.</p></details>
+      <details><summary>What if I do not like it?</summary><p>Sit on it for thirty days. If it is not right, we collect it and refund you.</p></details>
     </div>
   </div>
 </section>
@@ -255,11 +315,15 @@
 <script src="js/site/util.js" defer></script>
 <script src="js/site/condense.js" defer></script>
 <script src="js/data/catalog.js" defer></script>
+<script src="js/shop/line-art.js" defer></script>
+<script src="js/shop/ui.js" defer></script>
+<script src="js/site/tabs.js" defer></script>
+<script src="js/site/carousel.js" defer></script>
 <script src="js/home/nav-menu.js" defer></script>
 <script src="js/home/entrances.js" defer></script>
 <script src="js/home/hero-scrub.js" defer></script>
 <script src="js/home/sofa-hold.js" defer></script>
-<script src="js/home/room-cards.js" defer></script>
+<script src="js/home/bands.js" defer></script>
 <script src="js/home/book-form.js" defer></script>
 <script src="js/home/scroll-sound.js" defer></script>
 <script src="js/site/footer.js" defer></script>

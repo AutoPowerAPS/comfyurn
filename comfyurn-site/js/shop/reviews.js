@@ -53,7 +53,7 @@ box.innerHTML=`
   <div class="rv-top">
     <div class="rv-score" id="rvScore"></div>
     <div class="rv-bars" id="rvBars" role="group" aria-label="Filter by star rating"></div>
-    <div class="rv-cta"><p>Own a ${p.name}? Tell other people how it lives.</p><button class="btn" type="button" id="rvWrite" aria-haspopup="dialog">Write a review</button></div>
+    <div class="rv-cta"><p>Own a ${CF.esc(p.name)}? Tell other people how it lives.</p><button class="btn" type="button" id="rvWrite" aria-haspopup="dialog">Write a review</button></div>
   </div>
   <p class="rv-note">Example reviews. Comfyurn is a fictional brand, so these were written for this demo, and reviews you add stay in this browser.</p>
   <div class="rv-tools">
@@ -67,7 +67,7 @@ box.innerHTML=`
 
   <dialog class="rv-dlg" id="rvDlg" aria-labelledby="rvDlgH">
     <form id="rvForm" novalidate>
-      <div class="rv-dlg-head"><h2 id="rvDlgH">Review the ${p.name}</h2><button class="ib" type="button" id="rvX" aria-label="Close">×</button></div>
+      <div class="rv-dlg-head"><h2 id="rvDlgH">Review the ${CF.esc(p.name)}</h2><button class="ib" type="button" id="rvX" aria-label="Close">×</button></div>
       <div class="rv-dlg-body">
         <fieldset class="rv-stars-in"><legend>Your rating</legend>
           ${[1,2,3,4,5].map(k=>`<input type="radio" name="rvR" id="rvR${k}" value="${k}"><label for="rvR${k}" title="${k} star${k>1?'s':''}"><span class="vh">${k} star${k>1?'s':''}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4L2.8 9.5l6.4-.8z"/></svg></label>`).join('')}

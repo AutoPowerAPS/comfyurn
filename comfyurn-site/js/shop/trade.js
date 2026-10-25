@@ -26,7 +26,7 @@ box.innerHTML=`
     </div>
     <div class="fld-two">
       <label class="fld">Industry<select id="tfInd"><option value="">Choose one</option>${INDUSTRIES.map(i=>`<option>${i}</option>`).join('')}</select><span class="fld-err" id="tfInd-err"></span></label>
-      <label class="fld">How many ${p.name}?<input id="tfQty" type="number" min="1" inputmode="numeric" value="10"><span class="fld-err" id="tfQty-err"></span></label>
+      <label class="fld">How many ${CF.esc(p.name)}?<input id="tfQty" type="number" min="1" inputmode="numeric" value="10"><span class="fld-err" id="tfQty-err"></span></label>
     </div>
     <label class="fld">Website (optional)<input id="tfWeb" type="url" inputmode="url" autocomplete="url" placeholder="https://"></label>
     <label class="fld">Anything else (optional)<textarea id="tfMsg" rows="3" placeholder="Finishes, deadlines, delivery site"></textarea></label>
@@ -52,7 +52,7 @@ form.addEventListener('submit',e=>{
   ];
   const bad=checks.filter(([id,msg])=>!err(id,msg));
   if(bad.length){$(bad[0][0]).focus();return}
-  box.innerHTML=`<div class="trade-done" role="status" tabindex="-1"><h3>Thank you, ${CF.esc(v('tfFirst'))}.</h3><p>An enquiry for ${CF.esc(v('tfQty'))} × ${p.name} for ${CF.esc(v('tfBiz'))} would now reach our trade team. This is a demo, so nothing was sent.</p></div>`;
+  box.innerHTML=`<div class="trade-done" role="status" tabindex="-1"><h3>Thank you, ${CF.esc(v('tfFirst'))}.</h3><p>An enquiry for ${CF.esc(v('tfQty'))} × ${CF.esc(p.name)} for ${CF.esc(v('tfBiz'))} would now reach our trade team. This is a demo, so nothing was sent.</p></div>`;
   box.querySelector('.trade-done').focus();
 });
 })();

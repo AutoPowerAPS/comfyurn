@@ -1,7 +1,7 @@
 /* Comfyurn · line drawings for each product type (placeholder imagery until real photos) */
 (function(){
 'use strict';
-const S='fill="none" stroke="#17262E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"';
+const S=`fill="none" stroke="${window.CF.token('--ink','#121816')}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"`;   // ink from base.css
 const ART={
   sofa:c=>`<path d="M22 70h156v26a8 8 0 0 1-8 8H30a8 8 0 0 1-8-8z" fill="${c}" ${S}/><path d="M34 70V52a10 10 0 0 1 10-10h112a10 10 0 0 1 10 10v18" fill="${c}" ${S}/><path d="M100 46v24M22 70a10 10 0 0 1 20 0M158 70a10 10 0 0 1 20 0M36 104v12M164 104v12" ${S}/>`,
   sectional:c=>`<path d="M14 72h120v28H14z M134 72h52v28h-52z" fill="${c}" ${S}/><path d="M24 72V54h104v18 M140 72V54h40v18" fill="${c}" ${S}/><path d="M134 54v18M20 100v12M180 100v12M76 54v18" ${S}/>`,

@@ -4,12 +4,12 @@ body{background:var(--panel);font:400 14px/1.5 var(--body)}
 .sp-tools{max-width:210mm;margin:0 auto;padding:16px 0;display:flex;justify-content:space-between;align-items:center;gap:16px}
 .sp-tools a{color:var(--accent);text-decoration:none;font-size:14.5px}
 .sp-tools a:hover{text-decoration:underline}
-.sheet{width:210mm;min-height:297mm;margin:0 auto 40px;padding:16mm 16mm 12mm;background:var(--card);box-shadow:0 20px 50px -30px rgba(23,38,46,.5);display:flex;flex-direction:column;gap:9mm}
+.sheet{width:210mm;min-height:297mm;margin:0 auto 40px;padding:16mm 16mm 12mm;background:var(--card);box-shadow:0 20px 50px -30px rgba(18,24,22,.5);display:flex;flex-direction:column;gap:9mm}
 .sp-loading,.sp-empty{padding:40px;color:var(--text-secondary)}
 .sp-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:5mm;border-bottom:1px solid var(--hairline)}
 .sp-head .mono{font-size:10.5px}
 .sp-hero{display:grid;grid-template-columns:1fr 1fr;gap:10mm;align-items:center}
-.sp-art{background:var(--canvas);border-radius:6px;aspect-ratio:1/.8;display:grid;place-items:center}
+.sp-art{background:var(--canvas);border-radius:0;aspect-ratio:1/.8;display:grid;place-items:center}
 .sp-art svg{width:82%;height:82%}
 .sp-id h1{font-size:40px;margin-top:4px}
 .sp-desc{color:var(--text-secondary);font-size:16px;margin-top:4px}
@@ -18,9 +18,9 @@ body{background:var(--panel);font:400 14px/1.5 var(--body)}
 .sp-price .mono{font-size:10px}
 .sp-cols{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font-size:13px}
 .sp-cols span{display:inline-flex;align-items:center;gap:6px}
-.sp-cols i{width:14px;height:14px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(23,38,46,.2)}
+.sp-cols i{width:14px;height:14px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(18,24,22,.2)}
 .sp-feats{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-.sp-feats li{font-size:12px;padding:3px 10px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line)}
+.sp-feats li{font-size:12px;padding:3px 10px;border-radius:var(--r-2);box-shadow:inset 0 0 0 1px var(--line)}
 .sheet h2{font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:8px}
 .sp-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:10mm}
 .sp-table{width:100%;border-collapse:collapse;font-size:13px}

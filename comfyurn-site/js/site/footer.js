@@ -12,7 +12,7 @@ const note=foot.querySelector('.foot-note');
 const COLS=[
   ['Info and support',[
     ['index.html#inside','What is inside a Comfyurn'],
-    ['index.html#rooms','The suite, room by room'],
+    ['index.html#rooms','Shop by room'],
     ['index.html#questions','Delivery, returns and questions'],
     ['index.html#book','Book a suite tour']
   ]],
@@ -34,8 +34,8 @@ foot.insertAdjacentHTML('afterbegin',`
   </div>
   <div class="foot-cols">
     ${COLS.map(([t,links],i)=>`<div class="fcol">
-      <h2><button type="button" aria-expanded="false" aria-controls="fl${i}">${t}${chev}</button><span>${t}</span></h2>
-      <ul id="fl${i}">${links.map(([h,l])=>`<li><a href="${h}">${l}</a></li>`).join('')}</ul>
+      <h2><button type="button" aria-expanded="false" aria-controls="fl${i}">${CF.esc(t)}${chev}</button><span>${CF.esc(t)}</span></h2>
+      <ul id="fl${i}">${links.map(([h,l])=>`<li><a href="${CF.esc(h)}">${CF.esc(l)}</a></li>`).join('')}</ul>
     </div>`).join('')}
     <div class="fcol visit">
       <h2><span>Visit the suite</span></h2>
@@ -43,7 +43,7 @@ foot.insertAdjacentHTML('afterbegin',`
       <a class="btn ghost sm" href="index.html#book">Book a tour</a>
     </div>
   </div>`);
-note.insertAdjacentHTML('beforebegin','<div class="foot-base"><a class="brand" href="index.html" aria-label="Comfyurn home"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 13h18v4a3 3 0 0 1-3 3H10a3 3 0 0 1-3-3z M10 20v5M22 20v5M7 13a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3" fill="none" stroke="#1F7A80" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>comfyurn</a><span class="mono">© 2026 Comfyurn</span></div>');
+note.insertAdjacentHTML('beforebegin','<p class="foot-sign">Nothing is <em>hidden.</em></p><div class="foot-base"><a class="brand" href="index.html" aria-label="Comfyurn home"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 13h18v4a3 3 0 0 1-3 3H10a3 3 0 0 1-3-3z M10 20v5M22 20v5M7 13a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3" fill="none" stroke="#1F7A80" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>comfyurn</a><span class="mono">© 2026 Comfyurn</span></div>');
 
 /* newsletter: checks the address, then thanks the visitor (demo, nothing is sent) */
 const form=document.getElementById('newsForm'),email=document.getElementById('newsEmail'),msg=document.getElementById('newsMsg');
