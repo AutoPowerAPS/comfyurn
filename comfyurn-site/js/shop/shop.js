@@ -17,7 +17,7 @@ $('price').querySelectorAll('option[value*="-"]').forEach(o=>{
 });
 
 /* ---------- type tiles ---------- */
-const card=CF.token('--card','#EFEEEA');
+const card='var(--card)';
 $('tiles').innerHTML=TILES.map(([k,l])=>`<button class="tile" type="button" data-tile="${CF.esc(k)}" aria-pressed="false"><div class="ti">${art(k,card)}</div><span>${CF.esc(l)}</span></button>`).join('');
 
 /* ---------- render ---------- */

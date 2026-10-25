@@ -8,6 +8,6 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{
     io.unobserve(e.target);
   }
 }),{threshold:.14});
-document.querySelectorAll('.reveal,#stack,#money').forEach(el=>io.observe(el));
+document.querySelectorAll('.reveal,#stack').forEach(el=>io.observe(el));
 document.addEventListener('visibilitychange',()=>document.body.classList.toggle('paused',document.hidden));
 })();

@@ -36,12 +36,12 @@ if(!items.length){
 }
 
 /* ---------- form pieces ---------- */
-// text field with a floating label; data-req holds the message shown when it is left empty
+// text field with a floating label; data-req holds the message shown when it is left empty; max caps the length (120 unless set)
 // small "?" toggletip, opened by hover, focus or click; used in fields and the summary
 const tip=(id,about,text)=>`<span class="tip"><button class="tip-b" type="button" aria-label="More information about ${about}" aria-expanded="false" aria-controls="tip-${id}">?</button><span class="tip-t" id="tip-${id}" role="tooltip">${text}</span></span>`;
 function field(id,label,o={}){
   return `<div class="f${o.cls?' '+o.cls:''}${o.tip?' has-tip':''}"${o.ship?' data-ship':''}>
-    <input id="${id}" name="${id}" type="${o.type||'text'}" placeholder=" " autocomplete="${o.auto||'off'}"${o.req?` data-req="${o.req}"`:''}${o.mode?` inputmode="${o.mode}"`:''} value="${esc(saved[id]||'')}" aria-describedby="${id}-err">
+    <input id="${id}" name="${id}" type="${o.type||'text'}" placeholder=" " maxlength="${o.max||120}" autocomplete="${o.auto||'off'}"${o.req?` data-req="${o.req}"`:''}${o.mode?` inputmode="${o.mode}"`:''} value="${esc(saved[id]||'')}" aria-describedby="${id}-err">
     <label for="${id}">${label}</label>${o.tip?tip(id,label.toLowerCase(),o.tip):''}<p class="f-err" id="${id}-err"></p></div>`;
 }
 function select(id,label,opts,o={}){
@@ -57,12 +57,12 @@ function address(pre,section){
     ${field(pre+'first','First name',{cls:'half',auto:a+'given-name',req:'Enter a first name'})}
     ${field(pre+'last','Last name',{cls:'half',auto:a+'family-name',req:'Enter a last name'})}
     ${field(pre+'company','Company (optional)',{auto:a+'organization',ship:true})}
-    ${field(pre+'addr1','Address',{auto:a+'address-line1',req:'Enter an address',ship:true})}
-    ${field(pre+'addr2','Apartment, suite, etc. (optional)',{auto:a+'address-line2',ship:true})}
+    ${field(pre+'addr1','Address',{auto:a+'address-line1',req:'Enter an address',ship:true,max:200})}
+    ${field(pre+'addr2','Apartment, suite, etc. (optional)',{auto:a+'address-line2',ship:true,max:200})}
     ${field(pre+'district','District',{auto:a+'address-level3',req:'Enter a district',ship:true,cls:'district'})}
     ${field(pre+'city','City',{cls:'third',auto:a+'address-level2',req:'Enter a city',ship:true})}
     <div class="f third" data-ship data-region="${pre}"></div>
-    ${field(pre+'post','Postcode',{cls:'third',auto:a+'postal-code',req:'Enter a postcode',ship:true})}
+    ${field(pre+'post','Postcode',{cls:'third',auto:a+'postal-code',req:'Enter a postcode',ship:true,max:12})}
   </div>`;
 }
 // the region box and city/postcode labels follow the chosen country
@@ -74,7 +74,7 @@ function applyCountry(pre,changed){
   const req=`Select a ${c.region.toLowerCase()}`;
   box.innerHTML=c.regions
     ?`<select id="${pre}region" name="${pre}region" autocomplete="${pre==='s'?'shipping':'billing'} address-level1" data-req="${req}" aria-describedby="${pre}region-err"><option value="">Choose one</option>${c.regions.map(r=>`<option${r===keep?' selected':''}>${r}</option>`).join('')}</select><label for="${pre}region">${c.region}</label><p class="f-err" id="${pre}region-err"></p>`
-    :`<input id="${pre}region" name="${pre}region" placeholder=" " autocomplete="${pre==='s'?'shipping':'billing'} address-level1" data-req="Enter a ${c.region.toLowerCase()}" value="${esc(keep)}" aria-describedby="${pre}region-err"><label for="${pre}region">${c.region}</label><p class="f-err" id="${pre}region-err"></p>`;
+    :`<input id="${pre}region" name="${pre}region" placeholder=" " maxlength="120" autocomplete="${pre==='s'?'shipping':'billing'} address-level1" data-req="Enter a ${c.region.toLowerCase()}" value="${esc(keep)}" aria-describedby="${pre}region-err"><label for="${pre}region">${c.region}</label><p class="f-err" id="${pre}region-err"></p>`;
   box.classList.toggle('sel',!!c.regions);
   box.classList.remove('bad');
   $(pre+'post').inputMode=c.postMode;
@@ -131,7 +131,7 @@ page.innerHTML=`
       <div class="co-sec">
         <div class="co-h"><h2>Contact</h2><button class="co-sign" type="button" id="signBtn" aria-expanded="false" aria-controls="signNote">Sign in</button></div>
         <p class="sign-note" id="signNote" hidden>Accounts arrive with the live shop. Until then, tick "Save this information for next time" and this browser will remember your details.</p>
-        ${field('email','Email',{type:'email',auto:'email',req:'Enter an email',mode:'email',tip:'Used for your order confirmation, nothing else unless you tick the box below.'})}
+        ${field('email','Email',{type:'email',auto:'email',req:'Enter an email',mode:'email',max:254,tip:'Used for your order confirmation, nothing else unless you tick the box below.'})}
         <label class="chk"><input type="checkbox" id="news" ${saved.news?'checked':''}><span>Email me about new pieces and suite events</span></label>
       </div>
 
@@ -147,7 +147,7 @@ page.innerHTML=`
         </div>
         ${address('s','shipping')}
         <div class="f-grid">
-          ${field('phone','Phone',{type:'tel',auto:'tel',req:'Enter a phone number',mode:'tel',tip:'Only used to reach you about this order, for example to agree a delivery time.'})}
+          ${field('phone','Phone',{type:'tel',auto:'tel',req:'Enter a phone number',mode:'tel',max:20,tip:'Only used to reach you about this order, for example to agree a delivery time.'})}
           ${select('access','Stairs at the address',`<option value="ground">Ground floor, no stairs</option><option value="lift">Upstairs, with a lift</option><option value="stairs">Upstairs, stairs only</option>`,{ship:true})}
         </div>
         <label class="chk"><input type="checkbox" id="remember" ${saved.email?'checked':''}><span>Save this information for next time</span></label>
@@ -195,7 +195,7 @@ page.innerHTML=`
       <div class="sl-wrap" id="slWrap"><ul class="sl-list" id="slList" tabindex="-1" aria-label="Items in your order">${lines}</ul></div>
       <p class="sl-more" id="slMore" hidden>Scroll for more items</p>
       <form class="code" id="codeForm" novalidate>
-        <div class="f"><input id="code" name="code" placeholder=" " autocomplete="off" aria-describedby="code-err"><label for="code">Discount code</label><p class="f-err" id="code-err"></p></div>
+        <div class="f"><input id="code" name="code" placeholder=" " maxlength="30" autocomplete="off" aria-describedby="code-err"><label for="code">Discount code</label><p class="f-err" id="code-err"></p></div>
         <button class="btn ghost sm" id="codeBtn" type="submit" disabled>Apply</button>
       </form>
       <dl class="tot">
@@ -372,6 +372,13 @@ function place(){
   items.forEach(i=>{const now=store.items().find(x=>x.id===i.id&&x.colour===i.colour);if(now)store.setQty(i.id,i.colour,now.qty-i.qty)});
   if(store.note()===note)store.setNote('');
 
+  // the slip carries the same facts as the screen, as plain text (CF.slip never reads it as HTML)
+  const slip={num,date:CF.slip.today(),name:val('sfirst')+' '+val('slast'),pickup:pick,
+    where:pick?[]:[val('saddr1'),val('saddr2'),[val('scity'),$('sdistrict').closest('[hidden]')?'':val('sdistrict')].filter(Boolean).join(', '),[val('sregion'),val('spost')].filter(Boolean).join(' '),COUNTRIES[val('scountry')].name],
+    method:pick?'Pick up at the suite':method.name,when:pick?pickupWhen:leadTime,email:val('email'),phone:val('phone'),
+    payment:pick?'Cash or card on collection':'Cash or card on delivery',
+    items:items.map(i=>({name:i.p.name,colour:CF.colourName(i.colour),qty:i.qty,total:i.total})),
+    subtotal,code:pct?code:'',off:t.off,total:t.total};
   page.innerHTML=`<div class="co-done">
     <svg class="tick" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 24.5l6 6 12-13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <p class="mono">Order ${num}</p>
@@ -384,8 +391,20 @@ function place(){
       <div><h3>Payment</h3><p>${pick?'Cash or card on collection':'Cash or card on delivery'}<br>Nothing is charged in this demo</p></div>
       <div><h3>Total</h3><p>${money(t.total)}${pct?` after ${code}`:''}, VAT included<br>${plural(count,'item')}</p></div>
     </div>
-    <a class="btn" href="products.html">Continue shopping</a>
+    <div class="done-acts">
+      <a class="btn" href="products.html">Continue shopping</a>
+      <button class="btn ghost slip-btn" id="slipBtn" type="button" aria-label="Download receipt (PDF)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6"/><rect x="3" y="9" width="18" height="8" rx="1.5"/><path d="M7 14h10v7H7z"/></svg><span aria-hidden="true">Receipt</span></button>
+    </div>
+    <p class="slip-err" id="slipErr" role="status"></p>
   </div>`;
+  const sb=$('slipBtn');
+  sb.addEventListener('click',()=>{
+    if(sb.disabled)return;
+    sb.disabled=true;sb.setAttribute('aria-busy','true');$('slipErr').textContent='';
+    CF.slip.save(slip)
+      .catch(()=>{$('slipErr').textContent='Couldn\'t create the PDF. Check your connection and try again.'})
+      .finally(()=>{sb.disabled=false;sb.removeAttribute('aria-busy')});
+  });
   scrollTo(0,0);
   $('doneH').focus();
   document.title='Order confirmed | Comfyurn';

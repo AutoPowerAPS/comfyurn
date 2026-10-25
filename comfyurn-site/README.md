@@ -56,7 +56,7 @@ If the phone cannot connect:
 
 | Path | Holds |
 | --- | --- |
-| `css/base.css` | Design tokens (colors, fonts, radius, shadow, easing), reset, type (Instrument Serif headings), buttons and `.tlink` text links, focus styles, site footer |
+| `css/base.css` | Design tokens (colors, fonts, radius, shadow, easing), reset, type (Instrument Serif headings), buttons and `.tlink` text links, focus styles, site footer, the night-mode palette (`[data-theme="dark"]`, screen only) and the `.theme-btn` toggle |
 | `css/home.css` | Styles used only by the home page, in section order |
 | `css/shop.css` | Styles shared by the shop pages: condensing header, grid, cards, toast |
 | `css/product.css` | Styles only the product page uses |
@@ -76,21 +76,24 @@ If the phone cannot connect:
 | `js/shop/saved.js` | Saved page builder |
 | `js/shop/trade.js` | Trade and bulk orders form in the product page's specifications fold-outs (demo, nothing is sent) |
 | `js/shop/checkout.js` | Checkout page builder: form, validation, country-aware address labels, delivery methods, discount code, confirmation |
+| `js/shop/slip.js` | Order slip: the printer button on the confirmation downloads the order as `Comfyurn-<order>.pdf`. Loads jsPDF only on click; all text goes in as plain Latin-1 text, so letters Helvetica cannot draw print as "?" |
+| `js/vendor/jspdf.umd.min.js` | jsPDF 4.2.1 (MIT, `jspdf.LICENSE.txt` beside it), copied from the npm package `dist/` with the source-map line removed. Upgrade by replacing the file and rerunning `tests/unit/slip.test.js` |
 | `js/site/util.js` | Tiny helpers for every page: `CF.esc` (safe text for HTML), `CF.emailOk` (the one email rule), `CF.token` (a design token for SVG colours) and `CF.wordRuns` (splits a headline into words, keeping italic parts). Loads first |
 | `js/site/tabs.js` | `CF.tabs`: a keyboard-friendly tab row (arrow keys, Home, End), used by the home Shop by room and Inside the sofa bands and the product page Inside band (vertical lists also take ArrowUp and ArrowDown) |
 | `js/site/carousel.js` | `CF.carousel`: a scroll-snap track with previous and next buttons that mark the ends (Most reviewed). `CF.loop`: an endless row of tiles moved by arrows, swipe or mouse drag (Shop by room pieces) |
+| `js/site/theme.js` | Night mode. A blocking script in every page's `<head>` (not `spec.html`, which stays light), so `data-theme` is on `<html>` before first paint. No saved choice follows the OS; `cf-theme-v1` (`"dark"` or `"light"`, anything else ignored) wins. `CF.themeFrom`/`CF.themeValid` (pure), `CF.setTheme`, `CF.theme`, `CF.themeButton` (wires `#themeBtn`, the right-most header control: `aria-pressed`, label, moon or sun icon). Follows the OS and other tabs live, keeps `<meta name="theme-color">` in step, fires `cf:theme` on `window` |
 | `js/site/condense.js` | `CF.condenseNav`: the bar that condenses on scroll, with its menu button and panel, shared by the home nav and the shop header. Loads right after `util.js` |
 | `js/site/help.js` | Help button (bottom right) on home and shop pages: common questions and answers, no live agent |
 | `js/site/signup.js` | "Join the list" email popup, once per visitor after 15 seconds, never over another dialog or the open bag (demo) |
 | `js/site/footer.js` | Site footer on the home and shop pages: newsletter band (demo), link columns that fold on phones, base row. The fictional-brand note stays in each page's HTML |
 | `js/home/nav-menu.js` | Home nav: sets up `CF.condenseNav` for the home bar (always condensed at 550px and narrower) |
 | `js/home/entrances.js` | Scroll-reveal entrances; pauses animations on hidden tabs |
-| `js/home/hero-scrub.js` | The scroll-scrubbed hero video, its captions and its pause button |
+| `js/home/hero-scrub.js` | The scroll-scrubbed hero video, its captions and its pause button. Runs on every screen; landscape screens load the wide cut, portrait screens (phones, portrait tablets) the 9:16 cut, and turning the screen swaps cuts. Only reduced motion gets the still hero (`CF.HERO_GATES`, kept in step with the poster preloads in `index.html` and the media query in `home.css`) |
 | `js/home/sofa-hold.js` | Press-and-hold sofa breakdown |
 | `js/home/bands.js` | Home bands built from the catalogue: Shop by room tabs, diptych drawings, Most reviewed carousel |
 | `js/home/book-form.js` | Booking form success state (demo, sends nothing) |
 | `js/home/scroll-sound.js` | Optional scroll click sound |
-| `assets/video/` | The scrub-encoded hero video |
+| `assets/video/` | The scrub-encoded hero video: `hero-scrub.mp4` (1376x768, wide) and `hero-scrub-portrait.mp4` (432x768, a 9:16 crop of the centre lane, 0.4 MB). Both keep a keyframe every 8 frames for smooth seeking. Remake the portrait cut with `ffmpeg -i hero-scrub.mp4 -vf crop=432:768:560:0 -c:v libx264 -preset slow -crf 22 -g 8 -keyint_min 8 -sc_threshold 0 -pix_fmt yuv420p -movflags +faststart -an hero-scrub-portrait.mp4`, and its poster from `hero-poster.jpg` with the same crop, then `node tests/tools-webp.js` |
 | `assets/images/` | Web-sized stills. Pages use the `.webp` files (`-960` is the phone size); the `.jpg` originals stay as sources and for the social preview (`og:image`). Make new WebP files with the browser encoder (see `tests/README.md`) |
 
 ## Conventions
@@ -100,11 +103,12 @@ If the phone cannot connect:
 
 - Scripts are classic `defer` scripts, one feature per file, each wrapped in an IIFE. Shared data lives on `window.CF`.
 - Load order on the home page: `js/site/util.js`, `js/site/condense.js`, `js/data/catalog.js`, `js/shop/line-art.js`, `js/shop/ui.js`, `js/site/tabs.js`, `js/site/carousel.js`, then the `js/home/*` scripts (`bands.js` after `sofa-hold.js`), then `js/site/footer.js`, `help.js`, `signup.js`.
-- Load order on shop pages: `js/site/util.js`, `js/site/condense.js`, `js/data/catalog.js`, `js/shop/line-art.js`, `js/shop/ui.js`, `js/shop/store.js`, `js/shop/header.js`, `js/shop/cart.js`, `js/site/footer.js`, `js/site/help.js`, `js/site/signup.js`, then the page script (`shop.js` or `product.js`). The product page also loads `js/data/reviews.js` after the catalogue and `js/shop/reviews.js` after `product.js`. `checkout.html` has its own quiet header, so it skips `header.js` and `cart.js` and loads `checkout.js` after `store.js` (with `util.js` first).
+- Load order on shop pages: `js/site/util.js`, `js/site/condense.js`, `js/data/catalog.js`, `js/shop/line-art.js`, `js/shop/ui.js`, `js/shop/store.js`, `js/shop/header.js`, `js/shop/cart.js`, `js/site/footer.js`, `js/site/help.js`, `js/site/signup.js`, then the page script (`shop.js` or `product.js`). The product page also loads `js/data/reviews.js` after the catalogue and `js/shop/reviews.js` after `product.js`. `checkout.html` has its own quiet header, so it skips `header.js` and `cart.js` and loads `slip.js` then `checkout.js` after `store.js` (with `util.js` first).
 - `product.html` also loads `js/site/tabs.js` just before `js/shop/product.js`, for its Inside band.
 - Shop pages mark themselves with `<body data-page="shop">`, `data-page="product"` or `data-page="checkout"` and include an empty `<header class="top" id="top">` that `header.js` fills.
 - Home and shop pages end with `<footer class="site-foot" id="foot">` holding a `.foot-note`, and load `js/site/footer.js` after the shared scripts (on the home page, last; on shop pages, just before the page script). The home page also loads `js/data/catalog.js` so the footer can list the rooms. Checkout keeps its own minimal footer.
-- Colors and fonts come from tokens in `css/base.css`. Don't add new hex values for existing roles.
+- Colors and fonts come from tokens in `css/base.css`. Don't add new hex values for existing roles. Night mode only swaps those tokens, so use `var(--token)` everywhere (SVG too: `stroke="var(--ink)"`). The dark bands (footer, announcement, "inside" bands, toast, checkout strip) use `--band` with `--on-ink` text, so they stay dark in both themes; text on `--accent` uses `--on-accent`; translucent veils use `rgba(var(--canvas-rgb),.5)`.
+- Load order for night mode: `js/site/theme.js` sits in `<head>` right after the stylesheets, without `defer`, on every page but `spec.html`. Tests: `drive.js` pins the OS to light; a night-mode test emulates dark itself.
 - Prices on the home page must match `js/data/catalog.js`.
 - The full rules are in `.claude/skills/comfyurn-structure/SKILL.md` one level up.
 

@@ -20,6 +20,9 @@ SITE = pathlib.Path(__file__).resolve().parent / "comfyurn-site"
 class NoCache(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_header("Cache-Control", "no-store")
+        # NM-F3: no framing by other sites (clickjacking); a <meta> CSP cannot say this, so it is a header
+        self.send_header("X-Frame-Options", "DENY")
+        self.send_header("Content-Security-Policy", "frame-ancestors 'none'")
         super().end_headers()
 
     def send_head(self):

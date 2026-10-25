@@ -12,7 +12,7 @@ CF.money=n=>{n=Math.round(n*100)/100;return CF.CUR+' '+(n%1?n.toLocaleString('en
 CF.priceHTML=n=>`<sup>${CF.CUR}</sup>${CF.fmt(n)}`;
 CF.VAT=13;
 CF.vatIn=n=>Math.round(n*CF.VAT/(100+CF.VAT)*100)/100;   // the VAT part of a VAT-inclusive amount
-const INK=CF.token('--ink','#121816'),INK2=CF.token('--ink-2','#4A524F'),INK3=CF.token('--ink-3','#8A918E');   // SVG colours from base.css
+const INK='var(--ink)',INK2='var(--ink-2)',INK3='var(--ink-3)';   // SVG colours from base.css; var() so drawings follow night mode without a redraw
 const star=f=>`<svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4L2.8 9.5l6.4-.8z" fill="${f?INK:'none'}" stroke="${INK}" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
 CF.stars=r=>`<span class="stars" aria-hidden="true">${[1,2,3,4,5].map(i=>star(r>=i-.25)).join('')}</span>`;
 // product pages live inside the room they were opened from, like collections/<room>/products/<id>

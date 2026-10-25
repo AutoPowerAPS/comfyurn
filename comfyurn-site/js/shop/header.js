@@ -36,6 +36,7 @@ top.innerHTML=`
       <button class="an-tab" type="button" aria-controls="announce" aria-expanded="true">${ic.truck}<span>VAT and delivery included</span></button>
       <a class="ib" id="favBtn" href="saved.html" aria-label="Saved items">${ic.heart}<span class="count" id="favCount">0</span></a>
       <button class="ib" id="bagBtn" type="button" aria-label="Bag">${ic.bag}<span class="count" id="bagCount">0</span></button>
+      <button class="theme-btn" id="themeBtn" type="button" aria-pressed="false" aria-label="Switch to night mode"></button>
     </div>
   </div>
   <div class="catwrap"><nav class="cats" aria-label="Product categories" id="cats">${roomLinks}</nav></div>

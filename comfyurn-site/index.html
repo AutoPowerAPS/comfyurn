@@ -7,7 +7,7 @@
      allowed (the pages set crops and colours with them). Framing protection needs host headers: see README "Hosting headers" -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>Comfyurn | Furniture with nothing hidden</title>
-<meta name="description" content="Comfyurn is a fictional furniture and home decor brand. Walk a sunlit suite, then open up the sofa and the bed layer by layer and see where your money goes.">
+<meta name="description" content="Comfyurn is a fictional furniture and home decor brand. Walk a sunlit suite, then open up the sofa and the bed layer by layer.">
 <meta name="theme-color" content="#FAFAF8">
 <meta property="og:title" content="Comfyurn | Furniture with nothing hidden">
 <meta property="og:description" content="Walk a sunlit suite. Then open up the sofa and the bed and see what is inside.">
@@ -19,11 +19,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400..600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-<!-- the scrolling hero paints this poster first; the media query is "none of GATES" in hero-scrub.js, so only screens that
-     get the scrolling hero fetch it. Keep the two in step. -->
-<link rel="preload" as="image" type="image/webp" href="assets/images/hero-poster.webp" media="not ((max-width: 720px) or ((orientation: portrait) and (max-width: 1024px)) or ((orientation: portrait) and (pointer: coarse)) or ((orientation: landscape) and (pointer: coarse) and (max-height: 560px)) or (prefers-reduced-motion: reduce))">
+<!-- the scrolling hero paints one of these posters first: wide on landscape screens, the 9:16 cut on portrait ones.
+     "no-preference" is "none of GATES" in hero-scrub.js, so the still hero (reduced motion) fetches neither. Keep them in step. -->
+<link rel="preload" as="image" type="image/webp" href="assets/images/hero-poster.webp" media="(orientation: landscape) and (prefers-reduced-motion: no-preference)">
+<link rel="preload" as="image" type="image/webp" href="assets/images/hero-poster-portrait.webp" media="(orientation: portrait) and (prefers-reduced-motion: no-preference)">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/home.css">
+<!-- night mode: blocking on purpose, so the theme is set before first paint -->
+<script src="js/site/theme.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -39,6 +42,7 @@
     <div class="navr">
       <button class="snd" id="snd" type="button" aria-pressed="false" aria-label="Turn scroll sound on"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span class="sl">Sound off</span></button>
       <a class="btn sm" href="#book">Book a tour</a>
+      <button class="theme-btn" id="themeBtn" type="button" aria-pressed="false" aria-label="Switch to night mode"></button>
     </div>
   </div>
   <div class="nlwrap"><nav class="nlinks" aria-label="Main">
@@ -189,22 +193,6 @@
         </div>
       </div>
     </div>
-
-    <div class="money part reveal" id="money" style="--i:4">
-      <div class="mono">Where your money goes · Haven sofa, Rs. 2,400</div>
-      <h3>Two thirds of the price is <em>what you can touch.</em></h3>
-      <div class="bar" role="img" aria-label="Price split: oak frame 26 percent, foam and springs 22 percent, linen cover 18 percent, hand build 20 percent, delivery and showroom 14 percent">
-        <i style="flex:26;--i:0"></i><i style="flex:22;--i:1"></i><i style="flex:18;--i:2"></i><i style="flex:20;--i:3"></i><i style="flex:14;--i:4"></i>
-      </div>
-      <div class="key">
-        <div><b>26%</b>Oak frame</div>
-        <div><b>22%</b>Foam and springs</div>
-        <div><b>18%</b>Linen cover</div>
-        <div><b>20%</b>Hand build</div>
-        <div><b>14%</b>Delivery and showroom</div>
-      </div>
-      <p class="note">Example figures for a fictional product. A real Comfyurn page would show your own costs here.</p>
-    </div>
   </div>
 </section>
 
@@ -298,10 +286,10 @@
     <div class="part" style="--i:0"><div class="mono">Questions people ask before they buy</div></div>
     <h2 class="big part" style="--i:1">Why does it <em>cost this?</em></h2>
     <div class="faq part" style="--i:2">
-      <details open><summary>Why is a Comfyurn sofa more than a flat-pack one?</summary><p>A flat-pack sofa saves money in the parts you cannot see: board frames held with staples, and low-density foam. We spend that money on oak, dowel joints and foam you can measure. The price bar above shows the split.</p></details>
+      <details open><summary>Why is a Comfyurn sofa more than a flat-pack one?</summary><p>A flat-pack sofa saves money in the parts you cannot see: board frames held with staples, and low-density foam. We spend that money on oak, dowel joints and foam you can measure.</p></details>
       <details><summary>How do I know the frame is real oak?</summary><p>We list the wood and the joint type on every spec card. At the showroom you can lift one front leg. A solid frame lifts the other leg with it. A weak one twists.</p></details>
       <details><summary>Will the cushions go flat?</summary><p>Foam density is the number that decides this. Our seat foam is 35 kg per cubic meter, and we guarantee its bounce for ten years. The cover unzips so you can turn or replace the foam, not the sofa.</p></details>
-      <details><summary>Does delivery cost extra?</summary><p>Delivery and showroom costs are part of the price bar, not a surprise at checkout. Before you pay, we confirm the piece fits through your door and your stairs.</p></details>
+      <details><summary>Does delivery cost extra?</summary><p>Delivery and showroom costs are already in the price, not a surprise at checkout. Before you pay, we confirm the piece fits through your door and your stairs.</p></details>
       <details><summary>What if I do not like it?</summary><p>Sit on it for thirty days. If it is not right, we collect it and refund you.</p></details>
     </div>
   </div>

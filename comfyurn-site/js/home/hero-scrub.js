@@ -28,9 +28,15 @@ const bands=[...document.querySelectorAll('.band')].map((el,n)=>{
 /* ---------- hero: scrub ---------- */
 const hero=document.getElementById('hero'),video=document.getElementById('vid'),stage=document.getElementById('stage');
 const posterEl=document.getElementById('poster'),ring=document.getElementById('ring'),cue=document.getElementById('cue');
-const VIDEO_URL='assets/video/hero-scrub.mp4',VIDEO_BYTES=1979131;
+// two cuts of the same walk-through: wide for landscape screens, a 9:16 crop of the centre lane for portrait ones (phones)
+const CUTS={wide:{url:'assets/video/hero-scrub.mp4',bytes:1979131,poster:'assets/images/hero-poster.webp'},
+  tall:{url:'assets/video/hero-scrub-portrait.mp4',bytes:436226,poster:'assets/images/hero-poster-portrait.webp'}};
+const PORTRAIT=matchMedia('(orientation: portrait)');
+const cut=()=>PORTRAIT.matches?CUTS.tall:CUTS.wide;
+let loadedCut=null,gen=0,ctrlNow=null;
 let target=0,shown=0,rafId=null,lastTick=0,heroOnScreen=true,loadK=0,seekBusy=false,pendingTime=null,started=false,inited=false;
-const heroProgress=()=>{const r=hero.getBoundingClientRect();const range=hero.offsetHeight-innerHeight;return range>0?clamp(-r.top/range,0,1):0};
+// the stage is 100svh, so the phone address bar sliding in and out does not shift the progress
+const heroProgress=()=>{const r=hero.getBoundingClientRect();const range=hero.offsetHeight-stage.offsetHeight;return range>0?clamp(-r.top/range,0,1):0};
 new IntersectionObserver(es=>{heroOnScreen=es[0].isIntersecting;if(heroOnScreen&&scrubOn&&rafId===null)rafId=requestAnimationFrame(tick)}).observe(hero);
 
 /* pause button: holds the video on its frame while the captions keep following the scroll; play catches it up */
@@ -77,10 +83,11 @@ function tick(now){
 }
 function onScroll(){target=heroProgress();if(rafId===null&&heroOnScreen)rafId=requestAnimationFrame(tick)}
 
-async function loadHeroBlob(){
-  const ctrl=new AbortController();let wd=setTimeout(()=>ctrl.abort(),20000);
-  const res=await fetch(VIDEO_URL,{priority:'low',signal:ctrl.signal});
-  const total=Number(res.headers.get('Content-Length'))||VIDEO_BYTES;
+async function loadHeroBlob(c){
+  const my=++gen;if(ctrlNow)ctrlNow.abort();
+  const ctrl=ctrlNow=new AbortController();let wd=setTimeout(()=>ctrl.abort(),20000);
+  const res=await fetch(c.url,{priority:'low',signal:ctrl.signal});
+  const total=Number(res.headers.get('Content-Length'))||c.bytes;
   const reader=res.body.getReader();const chunks=[];let got=0,lastRing=0;
   for(;;){
     const{done,value}=await reader.read();if(done)break;
@@ -89,16 +96,19 @@ async function loadHeroBlob(){
     const frac=Math.min(1,got/total),now=performance.now();
     if(now-lastRing>100||frac===1){lastRing=now;ring.style.setProperty('--ld',Math.round(126*(1-frac)))}
   }
-  clearTimeout(wd);ring.style.setProperty('--ld',0);
+  clearTimeout(wd);if(my!==gen)return;   // a rotation asked for the other cut meanwhile
+  ring.style.setProperty('--ld',0);loadedCut=c;
+  if(video.src.startsWith('blob:'))URL.revokeObjectURL(video.src);
   video.src=URL.createObjectURL(new Blob(chunks,{type:'video/mp4'}));video.load();
   video.addEventListener('canplay',()=>{requestSeek(heroProgress()*video.duration);stage.classList.add('video-ready')},{once:true});
 }
-function failVideo(){stage.classList.add('video-failed')}
-function startBlobFetch(){if(started)return;started=true;loadHeroBlob().catch(failVideo)}
+function failVideo(e){if(e&&e.name==='AbortError'&&ctrlNow&&!ctrlNow.signal.aborted)return;stage.classList.add('video-failed')}
+function startBlobFetch(){if(started)return;started=true;const c=cut();loadHeroBlob(c).catch(e=>{if(c===cut())failVideo(e)})}
 function initHeroOnce(){
   if(inited)return;inited=true;
-  posterEl.style.backgroundImage="url('assets/images/hero-poster.webp')";
-  const im=new Image();im.onload=startBlobFetch;im.onerror=startBlobFetch;im.src='assets/images/hero-poster.webp';
+  const c=cut();
+  posterEl.style.backgroundImage=`url('${c.poster}')`;
+  const im=new Image();im.onload=startBlobFetch;im.onerror=startBlobFetch;im.src=c.poster;
   setTimeout(startBlobFetch,4000);
   const t0=performance.now();
   (function ramp(now){
@@ -108,14 +118,16 @@ function initHeroOnce(){
   })(t0);
 }
 
-// the screens that get the still hero instead; index.html preloads the poster only when none of these match (keep both in step)
-const GATES=window.CF.HERO_GATES=[
-  '(max-width: 720px)',
-  '(orientation: portrait) and (max-width: 1024px)',
-  '(orientation: portrait) and (pointer: coarse)',
-  '(orientation: landscape) and (pointer: coarse) and (max-height: 560px)',
-  '(prefers-reduced-motion: reduce)'
-];
+// the screens that get the still hero instead: only reduced motion. Phones and tablets scrub the portrait cut.
+// index.html preloads each poster only when none of these match (keep both in step)
+const GATES=window.CF.HERO_GATES=['(prefers-reduced-motion: reduce)'];
+// turning the screen swaps to the cut that fits it
+PORTRAIT.addEventListener('change',()=>{
+  if(!inited||!scrubOn||cut()===loadedCut)return;
+  const c=cut();posterEl.style.backgroundImage=`url('${c.poster}')`;
+  stage.classList.remove('video-ready','video-failed');
+  loadHeroBlob(c).catch(e=>{if(c===cut())failVideo(e)});
+});
 let scrubOn=false;
 function enableScrub(){
   if(scrubOn)return;scrubOn=true;

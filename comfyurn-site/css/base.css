@@ -38,6 +38,11 @@
   --glass-panel:rgba(250,250,248,.56);
   --glass-solid:rgba(250,250,248,.96);
   --glass-edge:rgba(255,255,255,.6);
+  --band:#121816;          /* the dark bands (footer, announcement, "inside" bands, toast): dark in both themes, so text on them uses --on-ink */
+  --on-accent:#fff;        /* text on --accent fills */
+  --canvas-rgb:250,250,248;  /* channels of --canvas and --tile, for translucent veils: rgba(var(--canvas-rgb),.5) */
+  --tile-rgb:239,238,234;
+  --glow:rgba(255,255,255,.7);  /* the drifting light on the home page */
   --glass-blur:saturate(180%) blur(22px);  /* repeated literally for -webkit-backdrop-filter, which older Safari ignores with var() */
   --serif:'Instrument Serif',Georgia,'Times New Roman',serif;  /* headlines; <em> inside one sets the italic half */
   --display:'DM Sans',system-ui,sans-serif;                   /* brand, product names, prices: the body face at heavier weights */
@@ -45,6 +50,24 @@
   --mono:'DM Mono',ui-monospace,monospace;
   --ease:cubic-bezier(.22,.7,.2,1);
   --ease-soft:cubic-bezier(.4,0,.2,1);
+  color-scheme:light;
+}
+/* night mode: js/site/theme.js sets data-theme on <html>. Screen only, so print and the spec sheet (no theme.js) stay light.
+   Bands keep their own dark --band; --on-ink and the other on-ink tokens already read on it. */
+@media screen{
+  [data-theme="dark"]{
+    color-scheme:dark;
+    --canvas:#121614;--surface:#1A1F1D;--tile:#1E2321;--panel:#1A1F1D;--panel-deep:#232927;
+    --ink:#ECEAE4;--ink-2:#A9B0AC;--ink-3:#7C8581;
+    --accent:#4FB3B9;--accent-hover:#6CC4C9;--accent-muted:rgba(79,179,185,.22);
+    --error:#E7948A;--ok:#5FB386;
+    --hairline:rgba(236,234,228,.14);
+    --linen:#1F1C17;
+    --band:#0C0F0E;--on-accent:#0C1413;
+    --canvas-rgb:18,22,20;--tile-rgb:30,35,33;--glow:rgba(255,255,255,.05);
+    --glass:rgba(18,22,20,.62);--glass-panel:rgba(18,22,20,.56);--glass-solid:rgba(18,22,20,.96);--glass-edge:rgba(255,255,255,.08);
+    --shadow:0 24px 48px -28px rgba(0,0,0,.7);
+  }
 }
 
 /* reset and type */
@@ -80,7 +103,7 @@ button{font:inherit;color:inherit}
 /* brand mark and buttons */
 .brand{font:600 22px/1 var(--display);letter-spacing:-.03em;text-decoration:none;display:flex;align-items:center;gap:8px}
 .brand svg{width:26px;height:26px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--accent);color:#fff;text-decoration:none;font:500 13px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;padding:17px 28px;border-radius:var(--r-1);border:0;cursor:pointer;transition:background .35s var(--ease-soft)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--accent);color:var(--on-accent);text-decoration:none;font:500 13px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;padding:17px 28px;border-radius:var(--r-1);border:0;cursor:pointer;transition:background .35s var(--ease-soft)}
 .btn:hover{background:var(--accent-hover)}
 .btn.sm{padding:12px 18px;font-size:12px}
 .btn.ghost{background:transparent;color:var(--text-primary);box-shadow:inset 0 0 0 1px var(--text-primary)}
@@ -94,7 +117,7 @@ button{font:inherit;color:inherit}
 
 /* shared editorial pieces: dark ink bands, the product tile (CF.tileHTML) and the layer tabs used by the home
    "Inside the sofa" band and the product page Inside band (js/site/tabs.js) */
-.dark{background:var(--ink);color:var(--on-ink)}
+.dark{background:var(--band);color:var(--on-ink)}
 .dark .mono,.dark .lede{color:var(--on-ink-2)}
 .ptile{display:grid;gap:4px;text-decoration:none;color:inherit}
 .pt-ph{aspect-ratio:1;max-width:100%;background:var(--tile);display:grid;place-items:center;overflow:hidden;margin-bottom:8px}
@@ -125,7 +148,7 @@ button{font:inherit;color:inherit}
 
 /* site footer (js/site/footer.js): a dark ink band with the newsletter, link columns, a large serif sign-off,
    the base row and the fictional-brand note */
-.site-foot{background:var(--ink);color:var(--on-ink)}
+.site-foot{background:var(--band);color:var(--on-ink)}
 .news{border-bottom:1px solid var(--ink-line)}
 .news-in{max-width:1480px;margin:0 auto;padding:40px max(16px,3vw);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px 40px}
 .news-t{font:400 clamp(24px,2.4vw,32px)/1.2 var(--serif);max-width:30ch}
@@ -147,7 +170,7 @@ button{font:inherit;color:inherit}
 .fcol a:not(.btn):hover{text-decoration:underline;text-underline-offset:3px;color:var(--accent-light)}
 .visit p{color:var(--on-ink-2);font-size:15.5px;max-width:38ch;margin-bottom:18px}
 .site-foot .btn.ghost{color:var(--on-ink);box-shadow:inset 0 0 0 1px var(--on-ink)}
-.site-foot .btn.ghost:hover{background:var(--on-ink);color:var(--ink)}
+.site-foot .btn.ghost:hover{background:var(--on-ink);color:var(--band)}
 .foot-sign{max-width:1480px;margin:0 auto;padding:clamp(24px,4vw,56px) max(16px,3vw) clamp(32px,5vw,72px);font:400 clamp(64px,13vw,200px)/.9 var(--serif);letter-spacing:-.02em}
 .foot-base{max-width:1480px;margin:0 auto;padding:22px max(16px,3vw);border-top:1px solid var(--ink-line);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 24px}
 .foot-base .mono{color:var(--on-ink-2)}
@@ -206,6 +229,11 @@ button{font:inherit;color:inherit}
 .help-list p{font-size:14.5px;color:var(--text-secondary);margin-top:8px}
 .help-foot{padding:14px 20px 20px;display:grid;gap:12px;justify-items:start}
 .help-foot p{font-size:13px;color:var(--text-secondary)}
+
+/* night-mode toggle (js/site/theme.js): the right-most control of every header. The icon takes the text colour. */
+.theme-btn{flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border-radius:50%;border:0;background:transparent;color:var(--text-primary);cursor:pointer;transition:background .3s var(--ease-soft)}
+.theme-btn:hover{background:var(--panel)}
+.theme-btn svg{width:22px;height:22px}
 
 /* pause every loop while the tab is hidden (toggled by JS) */
 body.paused *,body.paused *::before,body.paused *::after{animation-play-state:paused!important}

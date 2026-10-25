@@ -29,7 +29,7 @@ $('crumbs').innerHTML=`<a href="index.html">Comfyurn</a> › <a href="products.h
 // one view per colour, one "what is inside" diagram, and a room photo when we have one
 // the layer list and the diagram share these rows (ui.js)
 const layerRows=CF.layerRows(p);
-const insideSVG=CF.insideArt(p);   // built once: the stage view, its thumbnail, the 16:9 slot and the Inside band share it
+const insideSVG=CF.insideArt(p);   // built once: the stage view, its thumbnail and the Inside band share it
 const views=p.cols.map(c=>({kind:'colour',c,label:CF.colourName(c)}))
   .concat([{kind:'inside',label:'What is inside'}])
   .concat(PHOTOS[p.id]?[{kind:'photo',label:'In the suite'}]:[]);
@@ -42,13 +42,6 @@ function viewHTML(v){
 function thumbHTML(v,i){
   const inner=v.kind==='photo'?`<span class="photo" style="background-image:url(${PHOTOS[p.id].src});background-position:${PHOTOS[p.id].pos};background-size:${PHOTOS[p.id].size}"></span>`:viewHTML(v);
   return `<button class="thumb" type="button" data-view="${i}" aria-label="${CF.esc(v.label)}">${inner}</button>`;
-}
-
-// below the main view: a 4:5 slot (the suite photo when there is one, else the piece in another colour)
-// and a 16:9 slot (the layer drawing), at the ratios the real lifestyle and material photos will use
-function moreHTML(){
-  const a=PHOTOS[p.id]?viewHTML({kind:'photo'}):art(p.type,COL[p.cols[1]||p.cols[0]]);
-  return `<div class="gm-a" aria-hidden="true">${a}</div><div class="gm-b" aria-hidden="true">${insideSVG}</div>`;
 }
 
 /* ---------- related ---------- */
@@ -76,7 +69,6 @@ $('pd').innerHTML=`
       <div class="stage" id="stage" aria-live="polite"></div>
       ${feats.length?`<ul class="feats" aria-label="Features">${feats.map(f=>`<li>${CF.esc(f)}</li>`).join('')}</ul>`:''}
     </div>
-    <div class="gal-more">${moreHTML()}</div>
     <div class="thumbs" id="thumbs" aria-label="Views">${views.map(thumbHTML).join('')}</div>
   </div>
   <div class="buy">
