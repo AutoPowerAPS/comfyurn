@@ -1,10 +1,10 @@
-# Publishes comfyurn-site/ to GitHub Pages on every push to main.
+# Publishes comfyurn-site/ to GitHub Pages on every push to development.
 # Only that folder goes live; tests/, .claude/ and the rest stay in the repo only.
 name: Deploy site
 
 on:
   push:
-    branches: [main]
+    branches: [development]
   workflow_dispatch: {}
 
 permissions:
